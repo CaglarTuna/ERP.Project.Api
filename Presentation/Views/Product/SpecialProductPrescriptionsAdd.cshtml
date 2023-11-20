@@ -1,0 +1,220 @@
+﻿@model ProductResponseModel
+@{
+    ViewData["Title"] = "SpecialProductPrescriptionsAdd";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #Select_1_chosen {
+        display: none;
+    }
+</style>
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Ürün Reçetesi Tanımla</legend>
+                <form action="/Product/SpecialProductPrescriptionsAdd" method="post" enctype="multipart/form-data" autocomplete="off">
+                    <div class="row">
+                        <div class="col-xs-12">
+
+                            <div class="row" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <label class="control-label">Ürün Kategorisi :</label>
+                                </div>
+
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                    <select data-placeholder="Ürün Kategorisini Seçiniz..." required="required" name="CategoryId" class="chosen-select">
+                                        @foreach (var item in Model.categoryDTOs)
+                                        {
+                                            <option value="@item.Id">@item.CategoryLanguageDTOs.FirstOrDefault().Name</option>
+                                            foreach (var subCategory in item.SubCategoryDto)
+                                            {
+                                                <option value="@item.Id">=> @subCategory.CategoryLanguageDTOs.FirstOrDefault().Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <label class="control-label">Ürün Adı :</label>
+                                </div>
+
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                    <input type="text" name="Name" required="required" placeholder="" class="inpt-charter">
+                                </div>
+                            </div>
+
+                            <div class="row" id="MaterialList_1" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" id="Material">
+                                    <select data-placeholder="Malzeme" required="required"
+                                            class="chosen-select" name="MaterialId[]">
+                                        <option value=""></option>
+                                        @foreach (var item in Model.materialDTOs)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" id="Measure">
+                                    <select id="selectM_1" required="required" name="UnitMeasureId[]" data-placeholder="Birim Ölçüsü"
+                                            class="chosen-select">
+                                        <option value=""></option>
+                                        @foreach (var item in Model.commonDTOs)
+                                        {
+                                            foreach (var meter in item.HeightMeasures)
+                                            {
+                                                <option value="@meter.Value">@meter.Text metrelik</option>
+                                            }
+                                        }
+
+
+                                    </select>
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <input type="text" required="required" id="Count_1" name="Count[]" placeholder="Adet" class="inpt-charter">
+                                </div>
+                            </div>
+                            <div id="newSelectMaterial"></div>
+
+                            <div class="row" id="" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-md-4 col-xs-4">
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-md-4 col-xs-4">
+                                    <button style=" float: right" type="submit"
+                                            class="btn btn-info">
+                                        HESAPLAMA ARACI
+                                    </button>
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-md-4 col-xs-4">
+                                    <i onclick="SatırEkle()" class="fa fa-plus-square"
+                                       style="font-size:35px; float: right; cursor: pointer;"></i>
+                                </div>
+
+                            </div>
+
+                            <div class="row" id="ProccessList" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" id="proccess">
+                                    <select name="ProcessId[]" required="required" data-placeholder="İşlem"
+                                            class="chosen-select">
+                                        <option value=""></option>
+                                        @foreach (var item in Model.processDTOs)
+                                        {
+                                            <option value="@item.Id">@item.ProcessLanguage.FirstOrDefault().Name</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <input type="text" required="required" name="ProcessDuration[]" id="ProccesDuration" placeholder="Süre - dk" class="inpt-charter">
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <input type="text" required="required" name="ProcessOrderNo[]" id="ProccessOrderNo" placeholder="Sıra" class="inpt-charter">
+                                </div>
+                            </div>
+                            <div id="NewProccess"></div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-md-12 col-xs-12" style="margin-top:3%;">
+                                    <i onclick="AddProccess()" class="fa fa-plus-square"
+                                       style="font-size:35px; float: right; cursor: pointer;"></i>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <label class="control-label">Teknik Resim :</label>
+                                </div>
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                    <input type="file" required="required"
+                                           class="inpt-charter btn-info file" name="technicalDrawing">
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <label class="control-label">Teknik Pdf :</label>
+                                </div>
+
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                    <input type="file" required="required"
+                                           class="inpt-charter btn-info file" name="technicalDocument">
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <label class="control-label">Açıklama :</label>
+                                </div>
+
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                    <textarea name="ProductDescription" required="required" rows="8" cols="40" class="inpt-charter"></textarea>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:20px; margin-right:20px">
+                            <button style=" float: right; margin-top: 20px" type="submit" class="btn btn-info">KAYDET</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="ProductType" value="2" />
+                    <input type="hidden" name="SpecialId" value="@ViewBag.SpecialId" />
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<script>
+    let sayi = 1;
+    function SatırEkle() {
+        sayi++;
+        $('#MaterialList_1').clone().attr('id', 'choosenSelect_' + sayi + '').appendTo($('#newSelectMaterial'));
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Material > .chosen-select').attr('id', 'Select_' + sayi + '');
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Measure > .chosen-select').attr('id', 'Measure_' + sayi + '');
+
+
+        $('#Select_' + sayi + '').chosen("destroy");
+        $('#Select_' + sayi + '').chosen();
+        $('#Measure_' + sayi + '').chosen("destroy");
+        $('#Measure_' + sayi + '').chosen();
+
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Material > .chosen-container-single').css("display", "none");
+        $('#Select_' + sayi + '_chosen').css("display", "inline-block");
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Measure > .chosen-container-single').css("display", "none");
+        $('#Measure_' + sayi + '_chosen').css("display", "inline-block");
+
+
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Material > #Select_' + sayi + ' > option[value=""]').attr('selected', 'selected');
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Measure > #Select_' + sayi + ' > option[value=""]').attr('selected', 'selected');
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> div > #Count_1').val("");
+    }
+    let count = 1;
+    function AddProccess() {
+        count++;
+        $('#ProccessList').clone().attr('id', 'choosenSelect_' + count + '').appendTo($("#NewProccess"));
+        $('#NewProccess > #choosenSelect_' + count + ' > #proccess > .chosen-select').attr('id', 'proccess_' + count + '');
+
+        $('#proccess_' + count + '').chosen("destroy");
+        $('#proccess_' + count + '').chosen();
+
+        $('#NewProccess > #choosenSelect_' + count + '> #proccess > .chosen-container-single').css("display", "none");
+        $('#NewProccess > #choosenSelect_' + count + '> #proccess > #proccess_' + count + '_chosen').css("display", "inline-block");
+
+        $('#NewProccess > #choosenSelect_' + count + ' > #proccess > #choosenSelect_' + count + '> option[value=""]').attr('selected', 'selected');
+        $('#NewProccess > #choosenSelect_' + count + ' > div > #ProccesDuration').val("");
+        $('#NewProccess > #choosenSelect_' + count + ' > div > #ProccessOrderNo').val("");
+
+    }
+</script>

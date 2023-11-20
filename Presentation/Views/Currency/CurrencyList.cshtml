@@ -1,0 +1,120 @@
+﻿
+@{
+    ViewData["Title"] = "CurrencyList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Filtreleme Alanı</legend>
+                <div class="row">
+                    <div class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <input type="text" name="filtre" class="inpt-charter" placeholder="Giriniz...">
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <button style=" float: right;margin-top:10px" type="submit" class="btn-charter-p m-b">
+                                    FİLTRELE
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                        <i data-toggle="modal" data-target="#ModalCurrency"
+                           class="fa fa-plus-square" style="font-size:35px; cursor: pointer; float:right"></i>
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Döviz Kur Listesi</legend>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-responsive mb10">
+                            <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                <thead>
+                                    <tr>
+                                        <th>USD/TRY</th>
+                                        <th>EUR/TRY</th>
+                                        <th>EUR/USD</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>13,92</td>
+                                        <td>15,52</td>
+                                        <td>1,11</td>
+                                    </tr>
+                                    <tr>
+                                        <td>13,92</td>
+                                        <td>15,52</td>
+                                        <td>1,11</td>
+                                    </tr>
+                                    <tr>
+                                        <td>13,92</td>
+                                        <td>15,52</td>
+                                        <td>1,11</td>
+                                    </tr>
+                                    <tr>
+                                        <td>13,92</td>
+                                        <td>15,52</td>
+                                        <td>1,11</td>
+                                    </tr>
+                                    <tr>
+                                        <td>13,92</td>
+                                        <td>15,52</td>
+                                        <td>1,11</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ModalCurrency" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Yeni Kur Ekle</h4>
+            </div>
+            <div class="modal-body" style="margin-bottom:3%;">
+                <div class="row">
+                    <div class="col-md-4 mt-3" style="margin-top:3%;">
+                        <label class="control-label">USD/TRY</label>
+                    </div>
+                    <div class="col-md-8 mt-3" style="margin-top:3%;">
+                        <input type="text" class="inpt-charter" name="name" value="" />
+                    </div>
+                    <div class="col-md-4 mt-3" style="margin-top:3%;">
+                        <label class="control-label">EUR/TRY</label>
+                    </div>
+                    <div class="col-md-8" style="margin-top:3%;">
+                        <input type="text" class="inpt-charter" name="name" value="" />
+                    </div>
+                    <div class="col-md-4 mt-3" style="margin-top:3%;">
+                        <label class="control-label">EUR/USD</label>
+                    </div>
+                    <div class="col-md-8 mt-3" style="margin-top:3%;">
+                        <input type="text" class="inpt-charter" name="name" value="" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary onbeginClick" style="margin-right:12px">KAYDET</button>
+            </div>
+        </div>
+    </div>
+</div>

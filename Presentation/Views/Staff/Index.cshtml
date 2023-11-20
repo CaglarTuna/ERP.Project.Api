@@ -1,0 +1,315 @@
+﻿@model (List<StaffDTO> staff, List<CommonDTO> commons)
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var rol = ViewBag.roleNames;
+
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Filtreleme Alanı</legend>
+
+                <div class="row">
+                    <form asp-controller="Staff" asp-action="Index" method="post" autocomplete="off">
+                        <div class="col-lg-11 col-md-11 col-sm-10 col-xs-10">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">  <input type="text" name="filtre" class="inpt-charter" placeholder="Giriniz..."></div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">  <button style=" float: right;margin-top:10px" type="submit" class="btn-charter-p m-b">FİLTRELE</button></div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                        <i data-toggle="modal" data-target="#AddModal" class="fa fa-plus-square" style="font-size:35px; float:right"></i>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+
+    <!--LİSTE ALANI-->
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Personel Listesi</legend>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-responsive mb10">
+                            <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                <thead>
+                                    <tr>
+
+                                        <th>Detay</th>
+                                        <th>Düzenle</th>
+                                        <th>Durumu</th>
+                                        <th>Ad Soyad</th>
+                                        <th>Email</th>
+                                        <th>Telefon</th>
+                                        <th>Departman</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.staff.OrderByDescending(x => x.Id))
+                                    {
+                                        <tr>
+                                            <td><a onclick="getCompanyInfo(@item.Id)" class="btn btn-info" data-toggle="modal" data-target="#detailModal">Detay Gör</a> </td>
+                                            <td><a onclick="getStaff(@item.Id)" class="btn btn-info">Düzenle</a> </td>
+                                            @if (item.Status == 1)
+                                            {
+                                                <td><a onclick="confirm(@item.Id)" class="btn btn-info">Pasif Yap</a> </td>
+                                            }
+                                            else
+                                            {
+                                                <td><a onclick="confirm(@item.Id)" class="btn btn-info">Aktif Yap</a> </td>
+                                            }
+                                            <td>@item.Name @item.Surname</td>
+                                            <td>@item.Email</td>
+                                            <td>@item.Telephone</td>
+                                            <td>@item.Department</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="modal fade" id="AddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width:100%">
+                <form asp-controller="Staff" asp-action="AddStaff"
+                      data-ajax-success="onSuccess"
+                      data-ajax="true" data-ajax-method="POST" autocomplete="off">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Personel Ekle</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="margin-top:10px">
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Ad</label>
+                                <div class="col-xs-8">
+                                    <input type="text" required="required" name="Name" class="inpt-charter">
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Soyad</label>
+                                <div class="col-xs-8">
+                                    <input type="text" required="required" name="Surname" class="inpt-charter">
+
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Email</label>
+                                <div class="col-xs-8">
+                                    <input type="email" required="required" name="Email" class="inpt-charter">
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Cep Telefonu</label>
+                                <div class="col-xs-8">
+                                    <input type="tel" required="required" name="Telephone" class="inpt-charter">
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Ünvan/Departman</label>
+                                <div class="col-xs-8">
+                                    <input type="text" required="required" name="Department" class="inpt-charter">
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Adres</label>
+                                <div class="col-xs-8">
+                                    <textarea name="Address" required="required" rows="8" cols="40" class="inpt-charter"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Roller</label>
+                                <div class="col-xs-8">
+
+                                    <select data-placeholder="Seçiniz" name="roles[]" multiple class="chosen-select" tabindex="2">
+                                        @foreach (var item in Model.commons)
+                                        {
+                                            foreach (var roles in item.RoleNames)
+                                            {
+                                                <option value="@roles.Value">@roles.Text</option>
+                                            }
+
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">İşlem Yetkileri</label>
+                                <div class="col-xs-8">
+                                    <select data-placeholder="Seçiniz" name="Process[]" multiple class="chosen-select" tabindex="2">
+                                        @foreach (var item in Model.commons)
+                                        {
+                                            foreach (var procces in item.proccessNames)
+                                            {
+                                                <option value="@procces.Value">@procces.Text</option>
+                                            }
+                                        }
+
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" style="margin-right:15px" class="btn btn-info">KAYDET</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:100%">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Personel Detayı</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-xs-12">
+                    <div class="form-group cf">
+                        <label class="col-xs-4 control-label" style="color:black">Adı</label>
+                        <div class="col-xs-4">
+                            <label id="names"></label>
+                        </div>
+                    </div>
+                    <div class="form-group cf">
+                        <label class="col-xs-4 control-label" style="color:black">Soyadı</label>
+                        <div class="col-xs-8">
+                            <label id="surnames"></label>
+                        </div>
+                    </div>
+                    <div class="form-group cf">
+                        <label class="col-xs-4 control-label" style="color:black">Eposta Adresi</label>
+                        <div class="col-xs-8">
+                            <label id="emailDetails"></label>
+                        </div>
+                    </div>
+                    <div class="form-group cf">
+                        <label class="col-xs-4 control-label" style="color:black">Telefon Numarası</label>
+                        <div class="col-xs-8">
+                            <label id="phoneNumbers"></label>
+                        </div>
+                    </div>
+                    <div class="form-group cf">
+                        <label class="col-xs-4 control-label" style="color:black">Departman</label>
+                        <div class="col-xs-8">
+                            <label id="departmens"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="border:0 !important;"></div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:100%">
+            <form asp-controller="Staff" asp-action="editStaff"
+                  data-ajax-success="onEditSucces"
+                  data-ajax="true" data-ajax-method="POST" autocomplete="off">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Personel Güncelle</h4>
+                </div>
+                <div class="modal-body staffEdit">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" style="margin-right:15px" class="btn btn-info">KAYDET</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function LoadPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    function getCompanyInfo(id) {
+        $.get("/Staff/getStaff", { id: id }).done(function (data) {
+            $('#names').text(data.name);
+            $('#surnames').text(data.surname);
+            $('#emailDetails').text(data.email);
+            $('#phoneNumbers').text(data.telephone);
+            $('#departmens').text(data.department);
+        })
+    }
+    function confirm(id) {
+        $.get("/Staff/confirm", { id: id }).done(function (data) {
+            Swal.fire({
+                icon: 'success',
+                title: 'İşlem Başarılı',
+                showConfirmButton: false,
+                timer: 2000
+            })
+            LoadPage()
+        })
+    }
+    var onSuccess = function (data) {
+
+        $('#AddModal').modal('hide');
+        if (data == "2") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Kayıt İşlemi sırasında hata meydana geldi lütfen tekrar deneyiniz',
+                showConfirmButton: false,
+                timer: 2000
+            })
+        }
+        else {
+            Swal.fire({
+                icon: 'success',
+                title: 'Kayıt İşlemi Başarılı',
+                showConfirmButton: false,
+                timer: 2000
+            })
+        }
+        LoadPage()
+    };
+    var pop = $('.staffEdit');
+    function getStaff(id) {
+        $.get('/Staff/getStaffEdit', { id: id }).done(function (data) {
+            pop.empty();
+            pop.html(data);
+            $('#editModal').modal('show');
+        })
+    }
+    var onEditSucces = function (data) {
+        console.log(data);
+        $('#editModal').modal('hide');
+        if (data == "2") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Güncelleme İşlemi sırasında hata meydana geldi lütfen tekrar deneyiniz',
+                showConfirmButton: false,
+                timer: 2000
+            })
+        }
+        else {
+            Swal.fire({
+                icon: 'success',
+                title: 'Güncelleme İşlemi Başarılı',
+                showConfirmButton: false,
+                timer: 2000
+            })
+        }
+        LoadPage()
+    };
+</script>

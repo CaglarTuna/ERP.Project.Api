@@ -1,0 +1,65 @@
+﻿@model (ProcessDTO procces, List<CommonDTO> common)
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">İşlem Adı :</label>
+    </div>
+    <input type="hidden" name="Id" value="@Model.procces.Id" />
+    <input type="hidden" name="ProcessNo" value="@Model.procces.ProcessNo" />
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <input type="text" name="Name" required="required"
+               class="inpt-charter" id="EditName" value="@Model.procces.ProcessLanguage.FirstOrDefault().Name">
+    </div>
+</div>
+
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Tahmini Maliyet (/dk) :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <input type="text" name="Cost" required="required"
+               class="inpt-charter" id="EditCost" value="@Model.procces.Cost">
+    </div>
+</div>
+
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Para Birimi :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <select data-placeholder="Seçiniz ..." required="required" name="currencyId" class="chosen-select">
+            <option value=""></option>
+            @foreach (var item in Model.common.Take(1))
+            {
+                foreach (var currendy in item.currenciesDTOs)
+                {
+                    if (Model.procces.CurrencyId == currendy.Id)
+                    {
+                        <option value="@currendy.Id" selected>@currendy.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@currendy.Id">@currendy.Name</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+    function LoadEditPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    var onEditSuccess = function () {
+        $('#MdlEditProcess').modal('hide');
+        Swal.fire({
+            icon: 'success',
+            title: 'Güncelleme İşlemi Başarılı',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        LoadEditPage();
+    };
+</script>

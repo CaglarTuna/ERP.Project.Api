@@ -1,0 +1,25 @@
+﻿@model List<OrderProductDTO>
+<div class="row" style="margin-top:25px">
+    <div class="col-md-12 col-sm-12 ">
+        <div class="table table-bordered" style="overflow:scroll">
+            <table class="table">
+                <tr>
+                    <th>Malzeme Adı</th>
+                    <th>Malzeme No</th>
+                    <th>Adet/Miktar</th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    foreach (var product in item.Products.productMaterialDTOs)
+                    {
+                        <tr>
+                            <td>@product.Materials.Name</td>
+                            <td>@product.Materials.Code</td>
+                            <td>@product.Count</td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</div>

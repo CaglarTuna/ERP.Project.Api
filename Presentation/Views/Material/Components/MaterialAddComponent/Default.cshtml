@@ -1,0 +1,224 @@
+﻿@model (List<RawMaterialDTO> material, List<CompanyDTO> company, List<CommonDTO> common)
+<div class="modal fade" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:100%">
+            <form asp-controller="Material" asp-action="AddMaterial"
+                  data-ajax-success="onSuccess" data-ajax-begin="OnBegin"
+                  data-ajax="true" data-ajax-method="POST" autocomplete="off">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Malzeme Ekle</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin-top:10px">
+
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Malzeme Kodu </label>
+                            <div class="col-xs-8">
+                                <input type="text" required="required" name="Code" class="inpt-charter">
+                            </div>
+                        </div>
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Malzeme Adı </label>
+                            <div class="col-xs-8">
+                                <input type="text" required="required" name="Name" class="inpt-charter">
+
+                            </div>
+                        </div>
+
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Malzeme Şekli</label>
+                            <div class="col-xs-8">
+                                <select data-placeholder="Seçiniz" id="Shape" required="required" name="ShapeId" class="chosen-select mt20" tabindex="2">
+                                    <option value=""></option>
+                                    @foreach (var item in Model.common)
+                                    {
+                                        foreach (var shape in item.MaterialShape)
+                                        {
+
+                                            <option value="@shape.Value">@shape.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group cf diameter" style="display:none;">
+                            <label class="col-xs-4 control-label">Ölçü 1 (Çap)</label>
+                            <div class="col-xs-8">
+                                <input type="text" required="required" name="Diameter" class="inpt-charter" placeholder="Ölçü 'mm' olarak girilecek">
+
+                            </div>
+                        </div>
+                        <div class="form-group cf length" style="display:none;">
+                            <label class="col-xs-4 control-label">Ölçü 2 (Boy)</label>
+                            <div class="col-xs-8">
+                                <input type="text" required="required" name="Length" class="inpt-charter" placeholder="Ölçü 'mm' olarak girilecek">
+
+                            </div>
+                        </div>
+                        <div class="form-group cf meter" style="display:none;">
+                            <label class="col-xs-4 control-label">Ölçü 3 </label>
+                            <div class="col-xs-8">
+                                <input type="text" name="Meter" class="inpt-charter" placeholder="Ölçü 'mm' cinsinden olacak">
+
+                            </div>
+                        </div>
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Tüketim Birimi</label>
+                            <div class="col-xs-8">
+                                <select data-placeholder="Seçiniz" required="required" name="UnitsOfMeasureId" class="chosen-select mt20" tabindex="2">
+                                    <option value=""></option>
+                                    @foreach (var item in Model.common.Take(1))
+                                    {
+                                        foreach (var unitsOfMeasure in item.unitsOfMeasureDTOs)
+                                        {
+                                            <option value="@unitsOfMeasure.Id">@unitsOfMeasure.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Satın Alma Birimi</label>
+                            <div class="col-xs-8">
+                                <select data-placeholder="Seçiniz" required="required" name="PurchasingUnitId" class="chosen-select mt20" tabindex="2">
+                                    <option value=""></option>
+                                    @foreach (var item in Model.common.Take(1))
+                                    {
+                                        @foreach (var units in item.unitsOfMeasureDTOs)
+                                        {
+                                            <option value="@units.Id">@units.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Birim Ölçü</label>
+                            <div class="col-xs-8">
+                                <select data-placeholder="Seçiniz" required="required" name="HeightMeasureId"  class="chosen-select mt20" tabindex="2">
+                                    <option></option>
+                                    @foreach (var item in Model.common)
+                                    {
+                                        foreach (var height in item.HeightMeasures)
+                                        {
+                                            <option value="@height.Value">@height.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Ham Madde</label>
+                            <div class="col-xs-8">
+                                <select data-placeholder="Seçiniz" required="required" name="rawMaterial[]" multiple  class="chosen-select mt20" tabindex="2">
+                                    <option value=""></option>
+                                    @foreach (var item in Model.material)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Maliyet Fiyatı</label>
+                            <div class="col-xs-8">
+                                <input type="text" required="required" name="CostPrice" class="inpt-charter">
+                            </div>
+                        </div>
+
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Döviz</label>
+                            <div class="col-xs-8">
+                                <select data-placeholder="Seçiniz" required="required" name="CurrencyId" class="chosen-select" tabindex="2">
+                                    <option value=""></option>
+                                    @foreach (var item in Model.common)
+                                    {
+                                        foreach (var currency in item.currenciesDTOs)
+                                        {
+                                            <option value="@currency.Id">@currency.Name</option>
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Tedarikçi Firma</label>
+                            <div class="col-xs-8">
+                                <select data-placeholder="Seçiniz" required="required" name="compony[]" multiple class="chosen-select" tabindex="2">
+                                    <option value=""></option>
+                                    @foreach (var item in Model.company)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Minimum Stok Miktarı</label>
+                            <div class="col-xs-8">
+                                <input type="text" required="required" name="MinStockQuantity" class="inpt-charter">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" style="margin-right:15px" class="btn btn-info btnClick">KAYDET</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function LoadPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    var onSuccess = function () {
+        $('#inputModal').modal('hide');
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Kayıt İşlemi Başarılı',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        LoadPage();
+    };
+    function OnBegin() {
+        $('#inputModal').modal('hide');
+        $('.btnClick').prop("disabled", true);
+        let timerInterval
+        Swal.fire({
+            title: 'İçerik Güncelleniyor',
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+            },
+            willClose: () => {
+                clearInterval(timerInterval)
+            }
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+            }
+        })
+    }
+    $('#Shape').change(function () {
+        var shapeValue = $('#Shape').val();
+        if (shapeValue == 1) {
+            $('.diameter').css("display", "block");
+            $('.length').css("display", "block");
+            $('.meter').css("display", "none");
+        }
+        else {
+            $('.diameter').css("display", "block");
+            $('.length').css("display", "block");
+            $('.meter').css("display", "block");
+        }
+    })
+</script>

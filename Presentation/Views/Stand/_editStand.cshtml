@@ -1,0 +1,54 @@
+﻿@model (StandDTO stand, List<ProcessDTO> processes)
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Tezgah Adı :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <input type="text" required="required" name="Name" class="inpt-charter" id="StandDesk" value="@Model.stand.Name">
+    </div>
+</div>
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">İşlem :</label>
+    </div>
+    <input type="hidden" name="Id" id="Id" value="@Model.stand.Id" />
+    <input type="hidden" name="StandNo" id="standNo" value="@Model.stand.StandNo" />
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <select data-placeholder="Seçiniz ..." required="required" class="chosen-select" id="" name="ProccessId">
+            <option></option>
+            @foreach (var item in Model.processes)
+            {
+                @if (Model.stand.StandProcess.FirstOrDefault().ProcessId == item.ProcessLanguage.FirstOrDefault().ProcessId)
+                {
+                    <option value="@item.Id" selected>
+                        @item.ProcessLanguage.FirstOrDefault().Name
+                    </option>
+                }
+                else
+                {
+                    <option value="@item.Id">
+                        @item.ProcessLanguage.FirstOrDefault().Name
+                    </option>
+                }
+            }
+        </select>
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+    function LoadEditPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    var onEditSuccess = function () {
+        $('#MdlEditTable').modal('hide');
+        Swal.fire({
+            icon: 'success',
+            title: 'Güncelleme İşlemi Başarılı',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        LoadEditPage();
+    };
+</script>

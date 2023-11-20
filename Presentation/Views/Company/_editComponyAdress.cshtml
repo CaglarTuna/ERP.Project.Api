@@ -1,0 +1,92 @@
+﻿@model (CompanyAddressDTO adres, List<CommonDTO> common)
+<div class="row" style="margin-top:10px">
+    <input type="hidden" name="CompanyId" value="@Model.adres.CompanyId" />
+    <input type="hidden" name="Id" value="@Model.adres.Id" />
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Adres Başlığı </label>
+        <div class="col-xs-8">
+            <input type="text" required="required" name="AddressTitle" class="inpt-charter" value="@Model.adres.AddressTitle">
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Ülke</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" required="required" name="CountryId" class="chosen-select" tabindex="2">
+                <option value=""></option>
+                @foreach (var item in Model.common.Take(1))
+                {
+                    foreach (var country in item.countries)
+                    {
+                        if (Model.adres.CountryId == country.Id)
+                        {
+                            <option value="@country.Id" selected>@country.CountryLanguage.FirstOrDefault().Name</option>
+                        }
+                        else
+                        {
+                            <option value="@country.Id">@country.CountryLanguage.FirstOrDefault().Name</option>
+                        }
+                    }
+                }
+            </select>
+
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">İl</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" required="required" name="CityId" class="chosen-select" tabindex="2">
+                <option value=""></option>
+                @foreach (var item in Model.common.Take(1))
+                {
+                    foreach (var country in item.countries)
+                    {
+                        foreach (var city in country.Cities)
+                        {
+                            if (Model.adres.CityId == city.Id)
+                            {
+
+                                <option value="@city.Id" selected>@city.CityLanguage.FirstOrDefault().Name</option>
+                            }
+                            else
+                            {
+
+                                <option value="@city.Id">@city.CityLanguage.FirstOrDefault().Name</option>
+                            }
+                        }
+                    }
+                }
+            </select>
+
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Posta Kodu</label>
+        <div class="col-xs-8">
+            <input type="text" required="required" name="PostCode" value="@Model.adres.PostCode" class="inpt-charter">
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Adres</label>
+        <div class="col-xs-8">
+            <textarea name="Address" required="required" rows="8" cols="40" class="inpt-charter">@Model.adres.Address</textarea>
+        </div>
+    </div>
+</div>
+<script>
+
+    $('.chosen-select').chosen();
+    function LoadEditPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    var onEditSuccess = function () {
+        $('#edtModal').modal('hide');
+        Swal.fire({
+            icon: 'success',
+            title: 'Güncelleme İşlemi Başarılı',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        LoadEditPage();
+
+    };
+</script>

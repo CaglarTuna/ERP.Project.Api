@@ -1,0 +1,85 @@
+﻿@model ProductDTO
+@{
+    ViewData["Title"] = "ProductInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="tabs-container">
+                <ul class="nav nav-tabs tab-border-top-danger">
+                    <li class="active"><a asp-controller="Product" asp-action="ProductInfo" asp-route-id="@Model.Id">Ürün Bilgileri</a></li>
+                    <li class=""><a asp-controller="Product" asp-action="productPrescription" asp-route-id="@Model.Id">Ürün Reçetesi</a></li>
+                    <li class=""><a asp-controller="Product" asp-action="ProductStock" asp-route-id="@Model.Id">Stok</a></li>
+                    <li class=""><a asp-controller="Product" asp-action="SpecialProductList" asp-route-id="@Model.Id">Benzersiz Ürün Sorgulama</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="panel-body">
+                            <fieldset class="fieldset">
+                                <legend class="fieldsetb">Info</legend>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">Ürün Tipi</label>
+                                            <div class="col-xs-10">
+                                                @if (Model.ProductType != 1)
+                                                {
+                                                    <span>Özel Ürün</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>Standart Ürün</span>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">Ürün Kategorisi</label>
+                                            <div class="col-xs-10">
+                                                @if (Model.Categories.CategoryLanguageDTOs.Count > 0)
+                                                {
+                                                    <span>@Model.Categories.CategoryLanguageDTOs.FirstOrDefault().Name</span>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">Ürün Adı</label>
+                                            <div class="col-xs-10">
+                                                @Model.Name
+                                            </div>
+                                        </div>
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">Barkod</label>
+                                            <div class="col-xs-10">
+                                                @Model.BarcodeNo
+                                            </div>
+                                        </div>
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">Üretim Seri No</label>
+                                            <div class="col-xs-10">
+                                                @Model.ProductionSerialNumber
+                                            </div>
+                                        </div>
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">Yaklaşık Birim Maliyet</label>
+                                            <div class="col-xs-10">
+                                                @Model.ProductCost
+                                            </div>
+                                        </div>
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">Toplam Üretim Sayısı</label>
+                                            <div class="col-xs-10">
+                                                Toplam Üretim Sayısı Eklenecek 10000
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

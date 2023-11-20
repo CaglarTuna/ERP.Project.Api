@@ -1,0 +1,333 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var list = HttpContextAccessor.HttpContext.Session.GetString("RoleList");
+    var liste = JsonConvert.DeserializeObject<List<DTO.StaffRolesDTO>>(list);
+    var StaffName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEZPAR</title>
+    <link href="~/assets/css/material-dashboard.min.css" rel="stylesheet">
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/assets/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="~/assets/css/animate.css" rel="stylesheet">
+    <link href="~/assets/css/style.css" rel="stylesheet">
+    <link href="~/assets/css/charter.css" rel="stylesheet">
+
+    <!-- Mainly scripts -->
+    <script src="~/assets/js/jquery-2.1.1.js"></script>
+    <script src="~/assets/js/bootstrap.min.js"></script>
+    <script src="~/assets/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="~/assets/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- Custom and plugin javascript -->
+    <script src="~/assets/js/main.js"></script>
+    <script src="~/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
+    <!-- PageElement -->
+    <link href="~/assets/css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="~/assets/css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="~/assets/css/plugins/dataTables/dataTables.responsive.css" rel="stylesheet">
+    <link href="~/assets/css/plugins/dataTables/dataTables.tableTools.min.css" rel="stylesheet">
+    <link href="~/assets/css/plugins/iCheck/custom1.css" rel="stylesheet">
+    <link href="~/assets/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="~/assets/css/plugins/dropzone/basic.css" rel="stylesheet">
+    <link href="~/assets/css/plugins/dropzone/dropzone.css" rel="stylesheet">
+    <link href="~/assets/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <script src="~/assets/js/plugins/chosen/chosen.jquery.js"></script>
+    <script src="~/assets/js/plugins/iCheck/icheck.min.js"></script>
+    <script src="~/assets/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="~/assets/js/plugins/dropzone/dropzone.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.3.3/dist/sweetalert2.all.min.js"></script>
+    @*<script src="~/assets/js/plugins/ckeditor/ckeditor.js"></script>*@
+
+    @*<script src="~/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>*@
+    <script>
+        $(document).ready(function () {
+            $('.chosen-select').chosen({});
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+            $('.input-group.date').datepicker({
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                calendarWeeks: true,
+                autoclose: true
+            });
+            //// Turn off automatic editor initilization.
+            //// Used to prevent conflictions with multiple text
+            //// editors being displayed on the same page.
+            //CKEDITOR.disableAutoInline = true;
+
+            //// Init Ckeditor
+            //CKEDITOR.replace('ckeditor1', {
+            //    height: 210,
+            //    on: {
+            //        instanceReady: function (evt) {
+            //            $('.cke').addClass('admin-skin cke-hide-bottom');
+            //        }
+            //    },
+            //});
+
+            //// Init Inline Ckeditors
+            //CKEDITOR.inline('ckeditor-inline1');
+            //CKEDITOR.inline('ckeditor-inline2');
+
+            $('.demo1').click(function () {
+                swal({
+                    title: "Güncelleme Başarılı"
+                });
+            });
+            $('.demo2').click(function () {
+                swal({
+                    title: "Silmek istediğinize eminmisiniz",
+                    showCancelButton: false,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Evet",
+                    closeOnConfirm: false
+
+                });
+            });
+
+            Dropzone.options.myAwesomeDropzone = {
+                autoProcessQueue: false,
+                uploadMultiple: true,
+                parallelUploads: 100,
+                maxFiles: 100,
+                dictDefaultMessage: 'Yenilemek istediğiniz oturma planı resmini bu alana sürükleyiniz.',
+                init: function () {
+                    var myDropzone = this;
+                    this.element.querySelector("button[type=submit]").addEventListener("click", function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        myDropzone.processQueue();
+                    });
+                    this.on("sendingmultiple", function () { });
+                    this.on("successmultiple", function (files, response) { });
+                    this.on("errormultiple", function (files, response) { });
+                }
+            };
+        });
+    </script>
+    <style>
+        body {
+            padding-right: 0 !important;
+        }
+
+        #inputdetayModal {
+            padding-right: 0 !important
+        }
+
+        .modal-open {
+            padding-right: 0px !important;
+        }
+
+        .btn-info {
+            background-color: #1C84C6 !important;
+            border-color: #1C84C6 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <nav class="navbar-default navbar-static-side fixed-menu" role="navigation">
+            <div class="sidebar-collapse">
+                <div id="hover-menu"></div>
+                <ul class="nav metismenu" id="side-menu">
+                    <li>
+                        <div class="logopanel" style="margin-left: 0px;">
+                            <div class="profile-element">
+                                <h2><a asp-controller="Home" asp-action="Index">Tezpar</a></h2>
+                            </div>
+                            <div class="logo-element">
+                                Tezpar
+                            </div>
+                        </div>
+                    </li>
+                    <div class="nano left-sidebar">
+                        <div class="nano-content">
+                            <ul class="nav nav-pills nav-stacked nav-inq">
+                                @if (liste.Any(x => x.Roles.Name == "SİSTEM YÖNETİCİSİ"))
+                                {
+                                    <li class="nav-parent">
+                                        <a href="#"><i class="fa fa-bars"></i><span class="nav-label">Yönetim</span></a>
+                                        <ul class="children nav">
+                                            <li><a asp-controller="Company" asp-action="CompanyManagement">Firma Yönetimi</a></li>
+                                        </ul>
+
+                                        <ul class="children nav">
+                                            <li><a asp-controller="Staff" asp-action="Index">Personel Yönetimi</a></li>
+                                        </ul>
+                                        <ul class="children nav">
+                                            <li><a asp-controller="Store" asp-action="Store">Depo Yönetimi</a></li>
+                                        </ul>
+                                        <ul class="children nav">
+                                            <li><a asp-controller="RawMaterial" asp-action="RawMaterial">Hammadde Yönetimi</a></li>
+                                        </ul>
+                                        <ul class="children nav">
+                                            <li><a asp-controller="Material" asp-action="MaterialManagement">Malzeme Yönetimi</a></li>
+                                        </ul>
+                                        <ul class="children nav">
+                                            <li><a asp-controller="ConsumptionMaterial" asp-action="ConsuptionMaterialManagement">Sarf Malzeme Yönetimi</a></li>
+                                        </ul>
+                                        <ul class="children nav">
+                                            <li><a asp-controller="Proccess" asp-action="Proccess">İşlem Yönetimi</a></li>
+                                        </ul>
+                                        <ul class="children nav">
+                                            <li><a asp-controller="Stand" asp-action="Index">Tezgah Yönetimi</a></li>
+                                        </ul>
+                                        <ul class="children nav">
+                                            <li><a asp-controller="Category" asp-action="ProductCategory">Ürün Kategori Yönetimi</a></li>
+                                        </ul>
+                                        <ul class="children nav">
+                                            <li><a asp-controller="Product" asp-action="ProductManagement">Ürün Reçetesi Yönetimi</a></li>
+                                        </ul>
+                                        <ul class="children nav">
+                                            <li><a asp-controller="Currency" asp-action="CurrencyList" >Kur Listesi</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                                @if (liste.Any(x => x.Roles.Name == "SATIŞ YÖNETİMİ" || x.Roles.Name == "SİSTEM YÖNETİCİSİ"))
+                                {
+                                    <li>
+                                        <a asp-controller="Company" asp-action="Company"><i class="fa fa-bars"></i><span class="nav-label">Firmalar</span></a>
+                                    </li>
+                                }
+                                @if (liste.Any(x => x.Roles.Name == "SİSTEM YÖNETİCİSİ"))
+                                {
+                                    <li>
+                                        <a asp-controller="Staff" asp-action="Staff"><i class="fa fa-bars"></i><span class="nav-label">Personeller</span></a>
+                                    </li>
+                                }
+                                @if (liste.Any(x => x.Roles.Name == "SİSTEM YÖNETİCİSİ" || x.Roles.Name == "SATIN ALMA SORUMLUSU"))
+                                {
+                                    <li>
+                                        <a asp-controller="Product" asp-action="Product"><i class="fa fa-bars"></i><span class="nav-label">Ürünler</span></a>
+                                    </li>
+                                }
+                                @if (liste.Any(x => x.Roles.Name == "SİSTEM YÖNETİCİSİ" || x.Roles.Name == "SATIN ALMA SORUMLUSU"))
+                                {
+                                    <li>
+                                        <a asp-controller="Material" asp-action="MaterialSupplyList"><i class="fa fa-bars"></i><span class="nav-label">Malzeme Tedarik</span></a>
+                                    </li>
+                                }
+                                @if (liste.Any(x => x.Roles.Name == "SİSTEM YÖNETİCİSİ" || x.Roles.Name == "SATIŞ YÖNETİMİ"))
+                                {
+                                    @*<li>
+                                        <a asp-controller="Order" asp-action="OrderProduction"><i class="fa fa-bars"></i><span class="nav-label">Üretim Siparişleri</span></a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Order" asp-action="Order"><i class="fa fa-bars"></i><span class="nav-label">Satış İçin Siparişler</span></a>
+                                    </li>*@
+                                    <li>
+                                        <a asp-controller="Order" asp-action="Orders"><i class="fa fa-bars"></i><span class="nav-label">Siparişler</span></a>
+                                    </li>
+                                }
+                                @if (liste.Any(x => x.Roles.Name == "SİSTEM YÖNETİCİSİ" || x.Roles.Name == "ÜRETİM YÖNETİMİ-USTABAŞI"))
+                                {
+                                    <li>
+                                        <a asp-controller="Order" asp-action="Production"><i class="fa fa-bars"></i><span class="nav-label">Üretim</span></a>
+                                    </li>
+                                }
+
+                                @if (liste.Any(x => x.Roles.Name == "ÜRETİM VERİ SORUMLUSU" || x.Roles.Name == "SİSTEM YÖNETİCİSİ"))
+                                {
+                                    <li>
+                                        <a asp-controller="Order" asp-action="OrderProductionControl"><i class="fa fa-bars"></i><span class="nav-label">Üretim Kontrolleri</span></a>
+                                    </li>
+                                }
+                                @if (liste.Any(x => x.Roles.Name == "SİSTEM YÖNETİCİSİ" || x.Roles.Name == "DEPO YÖNETİMİ"))
+                                {
+                                    <li>
+                                        <a asp-controller="Stock" asp-action="StockMaterialList"><i class="fa fa-bars"></i><span class="nav-label">Stoktaki Malzeme Listesi</span></a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Material" asp-action="MaterialSupplyRequest"><i class="fa fa-bars"></i><span class="nav-label">Malzeme Tedarik Talep</span></a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Material" asp-action="MaterialStockEntrys"><i class="fa fa-bars"></i><span class="nav-label">Malzeme Stok Girişleri</span></a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Material" asp-action="MaterialPrepared"><i class="fa fa-bars"></i><span class="nav-label">Hazırlanacak Malzemeler</span></a>
+                                    </li>
+                                }
+                                @if (liste.Any(x => x.Roles.Name == "SİSTEM YÖNETİCİSİ" || x.Roles.Name == "DEPO YÖNETİMİ" || x.Roles.Name == "SATIN ALMA SORUMLUSU"))
+                                {
+                                    <li>
+                                        <a asp-controller="Material" asp-action="MaterialStockExit"><i class="fa fa-bars"></i><span class="nav-label">Malzeme Stok Çıkışları</span></a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="ConsumptionMaterial" asp-action="ConsuptionMaterialEntriy"><i class="fa fa-bars"></i><span class="nav-label">Sarf Malzeme Depo Girişleri</span></a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="ConsumptionMaterial" asp-action="ComsuptionMaterialStockExit"><i class="fa fa-bars"></i><span class="nav-label">Sarf Malzeme Depo Çıkışları</span></a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Product" asp-action="productEntries"><i class="fa fa-bars"></i><span class="nav-label">Ürün Girişleri</span></a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="SawDust" asp-action="SawDustStock"><i class="fa fa-bars"></i><span class="nav-label">Talaş</span></a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Order" asp-action="OrderOutput"><i class="fa fa-bars"></i><span class="nav-label">Sipariş Çıkış</span></a>
+                                    </li>
+                                }
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="page-wrapper" class="gray-bg">
+            <nav class="navbar navbar-fixed-top white-bg show-menu-full" id="nav" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn" href="javascript:void(0)"><i class="fa fa-bars" style="font-size:27px;"></i> </a>
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    @*<li class="dropdown">
+                            <div class="lang-select">
+                                <button type="button" class="active">TR</button>
+                                <span>|</span>
+                                <button type="button" class="">EN</button>
+                            </div>
+                        </li>*@
+                    <li class="dropdown pull-right">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                            <span class="pl15"> @StaffName </span>
+                            <span class="caret caret-tp"></span>
+                        </a>
+                        <ul class="dropdown-menu animated m-t-xs">
+                            <li><a asp-controller="Auth" asp-action="LogOut" class="animated animated-short fadeInUp"><i class="fa fa-sign-out"></i> Çıkış</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            @RenderBody()
+            @RenderSection("Scripts", required: false)
+            <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+            <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+            <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap.min.js"></script>
+
+
+            <script>
+                $('.dataTable').DataTable({
+                    "language": { "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json" },
+                    pageLength: 50,
+                    lengthMenu: [[10, 50, 100], [10, 50, 100]]
+                });
+            </script>
+</body>
+</html>

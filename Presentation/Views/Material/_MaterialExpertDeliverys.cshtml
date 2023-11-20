@@ -1,0 +1,52 @@
+﻿@model MaterialResponseModel
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Malzeme Adı :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <label class="control-label">@Model.MaterialDTO.Name</label>
+        <input type="hidden" name="MaterialId" value="@Model.MaterialDTO.Id" />
+    </div>
+</div>
+
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Teslim Edilen Adet/Miktar :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <input type="text" name="Quantity"
+               class="inpt-charter" value="">
+    </div>
+</div>
+
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Teslim Alan Usta :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <select data-placeholder="Seçiniz ..." name="StaffId" class="chosen-select">
+            <option value=""></option>
+            @foreach (var item in Model.Staffs)
+            {
+                <option value="@item.Id">@item.Name @item.Surname</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Teslimat Notu :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <textarea name="DeliveryNote" rows="6"
+                  cols="40" class="inpt-charter"></textarea>
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+</script>

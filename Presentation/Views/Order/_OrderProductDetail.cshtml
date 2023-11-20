@@ -1,0 +1,39 @@
+﻿@model OrderDTO
+<div class="row" style="margin-top:10px">
+    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+        <span><strong>Depo :</strong></span>
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+        <p>@Model.Stores.Name</p>
+    </div>
+
+    @*<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+        <span><strong>Özel Üretim Notu :</strong></span>
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+        <p>@Model.speacialProductDescriptions.FirstOrDefault().Name</p>
+    </div>*@
+
+    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+        <span><strong>Ürünler :</strong></span>
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+        <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+            <thead>
+                <tr>
+                    <th>Ürün Adı</th>
+                    <th>Adedi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderProducts)
+                {
+                    <tr>
+                        <td>@item.Products.Name</td>
+                        <td>@item.Quantitiy</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

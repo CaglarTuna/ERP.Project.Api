@@ -1,0 +1,221 @@
+﻿@model (List<MaterialDTO> material, List<CommonDTO> common)
+@{
+    ViewData["Title"] = "MaterialManagement";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Filtreleme Alanı</legend>
+
+                <!--SEARCH AREA-->
+                <div class="row">
+                    <div class="col-lg-11 col-md-11 col-sm-10 col-xs-10">
+                        <form asp-controller="Material" asp-action="MaterialManagement" method="post" autocomplete="off">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">  <input type="text" name="filtre" id="filter" class="inpt-charter" placeholder="Giriniz..."></div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">  <button style=" float: right;margin-top:10px" type="submit" class="btn-charter-p m-b">FİLTRELE</button></div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                        <i data-toggle="modal" data-target="#inputModal" class="fa fa-plus-square" style="font-size:35px; float:right"></i>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+
+    <!--LİSTE ALANI-->
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Malzeme Listesi</legend>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-responsive mb10">
+                            <table id="myTable" class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                <thead>
+                                    <tr>
+                                        <th>Detay</th>
+                                        <th>Düzenle</th>
+                                        <th>Malzeme Kodu</th>
+                                        <th>Malzeme Adı</th>
+                                        <th>Malzeme Şekli</th>
+                                        <th>Birim</th>
+                                        <th>Birim Ölçü</th>
+                                        <th>Maliyet</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.material.OrderByDescending(x => x.Id))
+                                    {
+                                        <tr>
+                                            <td><a onclick="detailMaterial(@item.Id)" class="btn btn-info">Detay Gör</a> </td>
+                                            <td><a onclick="editFunction(@item.Id)" class="btn btn-info">Düzenle</a> </td>
+                                            @*<td><a asp-controller="Material" asp-action="MaterialCertificate" asp-route-id="@item.Id" class="btn btn-info">Sertifikalara Git</a> </td>*@
+                                            <td>@item.Code </td>
+                                            <td>@item.Name </td>
+                                            <td>@item.MaterialShape.Name</td>
+                                            <td>
+                                                @foreach (var unit in item.materialUnitsOfMeasuresDTOs)
+                                                {
+                                                    <span>@unit.UnitsOfMeasure.Name</span>
+                                                }
+                                            </td>
+
+                                            <td>
+                                                @if (item.HeightMeasureDTO != null)
+                                                {
+                                                    <span>@item.HeightMeasureDTO.Name</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+                                            </td>
+                                            <td>@item.CostPrice @item.CurrenciesDTO.Name</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+<!-- Malzeme EKLEME POP-UP-->
+@await Component.InvokeAsync("MaterialAddComponent")
+
+<!-- malzeme detay POP-UP-->
+<div class="modal fade" id="inputdetayModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:100%">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Malzeme Detay</h4>
+            </div>
+
+            <div class="modal-body detailBody">
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- malzeme Düzenleme POP-UP-->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:100%">
+            <form asp-controller="Material" asp-action="EditMaterials"
+                  data-ajax-success="EditOnSuccess" data-ajax-begin="OnBegin"
+                  data-ajax="true" data-ajax-method="POST" data-ajax-failure="failed" autocomplete="off">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Malzeme Güncelle</h4>
+                </div>
+                <div class="modal-body editBody">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" style="margin-right:15px" class="btn btn-info btnClick">KAYDET</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function LoadPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+
+    var edit = $('.editBody');
+    function editFunction(id) {
+        $.get('/Material/EditMaterial', { id: id }).done(function (data) {
+            $('.editBodyy').empty();
+            edit.html('');
+            edit.html(data);
+            $('#editModal').modal("show");
+        });
+    }
+    var detail = $('.detailBody');
+    function detailMaterial(id) {
+        $.get('/Material/MaterialDetail', { id: id }).done(function (data) {
+            $('.detailBody').empty();
+            detail.html('');
+            detail.html(data);
+            $('#inputdetayModal').modal("show");
+        });
+    }
+    var EditOnSuccess = function (data) {
+        if (data === 202) {
+            $('#editModal').modal('hide');
+            Swal.fire({
+                icon: 'success',
+                title: 'Güncelleme İşlemi Başarılı',
+                showConfirmButton: false,
+                timer: 2000
+            });
+            LoadPage()
+        }
+        else {
+            failed();
+        }
+
+    };
+    var failed = function (data) {
+        $('#editModal').modal('hide');
+        Swal.fire({
+            icon: 'error',
+            title: 'Güncelleme İşlemi Sırasında Hata gerçekleşti',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        LoadPage()
+    }
+    function OnBegin() {
+        $('#editModal').modal('hide');
+        $('.btnClick').prop("disabled", true);
+        let timerInterval
+        Swal.fire({
+            title: 'İçerik Güncelleniyor',
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+            },
+            willClose: () => {
+                clearInterval(timerInterval)
+            }
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+            }
+        })
+    }
+    $('#EditShape').change(function () {
+        if (shapeValue == 1) {
+            $('.Editdiameter').css("display", "block");
+            $('.Editlength').css("display", "block");
+            $('.Editmeter').css("display", "none");
+        }
+        else {
+            $('.Editdiameter').css("display", "block");
+            $('.Editlength').css("display", "block");
+            $('.Editmeter').css("display", "block");
+        }
+    })
+</script>

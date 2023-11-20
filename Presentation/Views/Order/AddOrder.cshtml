@@ -1,0 +1,404 @@
+﻿@model OrderModel
+@{
+    ViewData["Title"] = "AddOrder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <form asp-controller="Order" asp-action="AddOrder" method="post" autocomplete="off">
+                <fieldset class="fieldset">
+                    <legend class="fieldsetb">Sipariş Ekle</legend>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Sipariş Kanalı :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <select data-placeholder="Seçiniz" name="OrderChannelId" class="chosen-select">
+                                <option value=""></option>
+                                @if (Model.OrderChannelDTOs != null)
+                                {
+                                    foreach (var item in Model.OrderChannelDTOs)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Müşteri Sipariş Numarası :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <input type="text" maxlength="15" name="OrderCustomerNo" class="inpt-charter">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Depo :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+
+                            <select data-placeholder="Seçiniz" name="StoreId" class="chosen-select">
+                                <option value=""></option>
+                                @if (Model.StoreDTOs != null)
+                                {
+                                    foreach (var item in Model.StoreDTOs)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Firma Adı :</label>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+
+                            <select data-placeholder="Seçiniz" id="componyList" name="CompanyId" class="chosen-select">
+                                <option value=""></option>
+                                @if (Model.companyDTOs != null)
+                                {
+                                    foreach (var item in Model.companyDTOs.Where(x => x.Status == 1))
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Sevk Adresi :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+
+                            <select data-placeholder="Seçiniz" name="AddressId" id="componyAddress" class="chosen-select">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Sipariş Alınma Tarihi :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <div class="input-group date">
+                                <input type="datetime" class="inpt-charter DatetimeChart" name="OrderDate" value="">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Sipariş Notu :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <textarea name="OrderNote" rows="8" cols="40" class="inpt-charter"></textarea>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Termin Tarihi :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <div class="input-group date">
+                                <input type="datetime" class="inpt-charter DatetimeChart" name="Deadline" id="deadline" value="">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Görüşme Tarihi :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <div class="input-group date">
+                                <input type="datetime" class="inpt-charter DatetimeChart" name="MeetingDate" value="">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Görüşme Notu :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <textarea name="MeetingNote" rows="8" cols="40" class="inpt-charter"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Hatırlatıcı Tarihi :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <div class="input-group date">
+                                <input type="datetime" class="inpt-charter DatetimeChart" autocomplete="off" name="ReminderDate" value="">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Hatırlatıcı Notu :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <textarea name="ReminderNote" rows="8" cols="40" class="inpt-charter"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <fieldset class="fieldset">
+                                <legend class="fieldsetb">Ürün Ekle</legend>
+
+                                <div class="col-lg-12">
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldsetb">Standart Ürünler</legend>
+
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-md-12 col-xs-12">
+                                                <i class="fa fa-plus-square"
+                                                   style="font-size:35px; float:right; cursor: pointer;"
+                                                   data-toggle="modal" data-target="#Moodal" id="AddProduct" onclick="SatırEkle()"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row" id="ProductList" style="margin-top: 3%;">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="selectDiv">
+                                                <select data-placeholder="Ürün" name="ProductId[]" class="chosen-select" id="ProductSelect">
+                                                    <option value=""></option>
+                                                    @foreach (var item in Model.productDTOs.Where(x => x.ProductType == 1))
+                                                    {
+                                                        <option value="@item.Id">@item.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                                <input type="text" name="Count[]" placeholder="Adet" class="inpt-charter">
+                                            </div>
+                                        </div>
+                                        <div id="productClone"></div>
+                                    </fieldset>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldsetb">Reçetesi Sonradan Oluşturulacak Özel Ürünler</legend>
+
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-md-12 col-xs-12">
+                                                <i class="fa fa-plus-square"
+                                                   style="font-size:35px; float:right; cursor: pointer;"
+                                                   onclick="AddSpecial()"></i>
+                                            </div>
+                                        </div>
+                                        <div id="SpecialProduct">
+                                            <div class="row" style="margin-top: 3%;" id="special">
+                                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="SpecialName">
+                                                    <input type="text" name="specialName[]" placeholder="Özel Ürün Adı" class="inpt-charter">
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="specialCount">
+                                                    <input type="text" name="SpecialQuantity[]" placeholder="Adet" class="inpt-charter">
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top: 3%;" id="ReminderNoteDiv">
+                                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                    <label class="control-label">Özel Ürün Reçetesi için Hatırlatıcı Notu :</label>
+                                                </div>
+
+                                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" id="Reminder">
+                                                    <textarea name="SpecialProductDescription[]" rows="8" cols="40" class="inpt-charter"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="specialProduct"></div>
+                                    </fieldset>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldsetb">Reçetesi Şimdi Oluşturulacak Özel Ürünler</legend>
+
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-md-12 col-xs-12">
+                                                <i class="fa fa-plus-square"
+                                                   style="font-size:35px; float:right; cursor: pointer;"
+                                                   onclick="AddSpecialRecipe()"></i>
+                                                <button type="button" class="btn btn-info" onclick="getRecipe()">Özel Ürün Reçetesi EKLE</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" style="margin-top: 3%;" id="SpecialProductRecipe">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="SelectBoxDiv">
+                                                <select data-placeholder="Özel Ürün" id="SelectSpecialProduct" style="height:100%;max-height:90%" class="chosen-select">
+                                                    <option value=""></option>
+                                                    @foreach (var item in Model.productDTOs.Where(x => x.ProductType != 1))
+                                                    {
+                                                        <option value="@item.Id">@item.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                                <input type="text" name="" placeholder="Adet" class="inpt-charter">
+                                            </div>
+                                        </div>
+                                        <div id="SpecialProductRecipeClone"></div>
+                                    </fieldset>
+                                </div>
+
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-lg-12 col-md-12 col-md-12 col-xs-12">
+                            <button style=" float: right" type="submit" class="btn btn-info">KAYDET</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form asp-controller="Product" asp-action="AddProductRecipe"
+                      data-ajax-success="getSelectList"
+                      data-ajax="true" data-ajax-method="POST">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Özel Ürün Reçetesi Ekle</h4>
+                    </div>
+                    <div class="modal-body mdlRecipe">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" style="margin-right:12px">KAYDET</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var onSuccesss = function () {
+        $('#Modal').modal('hide');
+        Swal.fire({
+            icon: 'success',
+            title: 'Kayıt İşlemi Başarılı',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    };
+    var getSelectList = function () {
+        $.get('/Order/ListSpecialProduct').done(function (data) {
+            $('#SelectSpecialProduct').empty();
+            $('#SelectSpecialProduct').append('<option value=""></option>');
+            for (var i = 0; i < data.$values.length; i++) {
+                $('#SelectSpecialProduct').append('<option value"' + data.$values[i].id + '">' + data.$values[i].name + '</option>')
+            }
+        });
+        onSuccesss();
+    }
+    var Recipe = $('.mdlRecipe');
+    function getRecipe() {
+        $.get('/Order/RecipeNNowCreated').done(function (data) {
+            Recipe.empty();
+            Recipe.html(data);
+            $('#Modal').modal('show');
+        });
+    }
+    $('#componyList').change(function () {
+        var id = $('#componyList').val();
+        $.get("/Order/getComponyAddress", { id: id }).done(function (data) {
+
+            $('#componyAddress').empty();
+            $('#componyAddress').append('<option value=""></option>');
+            for (var i = 0; i < data.$values.length; i++) {
+                $('#componyAddress').append('<option value="' + data.$values[i].id + '">' + data.$values[i].addressTitle + '</option>')
+            }
+            $('#componyAddress').trigger("chosen:updated");
+        })
+    })
+
+    $(function () {
+        $('.DatetimeChart').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            format: "dd/mm/yyyy",
+            language: "tr"
+        });
+    });
+    let sayi = 1;
+    function SatırEkle() {
+        sayi++;
+        $('#ProductList').clone().attr('id', 'choosenSelect_' + sayi + '').appendTo($('#productClone'));
+        $('#productClone > #choosenSelect_' + sayi + '> #selectDiv > .chosen-select').attr('id', 'Select_' + sayi + '');
+
+        $('#Select_' + sayi + '').chosen("destroy");
+        $('#Select_' + sayi + '').chosen();
+
+        $('#productClone > #choosenSelect_' + sayi + '> #selectDiv > .chosen-container-single').css("display", "none");
+        $('#Select_' + sayi + '_chosen').css("display", "inline-block");
+
+        $('#productClone > #choosenSelect_' + sayi + '> #selectDiv > #Select_' + sayi + ' > option[value=""]').attr('selected', 'selected');
+    }
+    let count = 1;
+    function AddSpecial() {
+        count++;
+        $('#SpecialProduct').clone().attr('id', 'special_' + count + '').appendTo($('#specialProduct'));
+        $('#specialProduct > #special_' + count + ' > #special > #SpecialName > .inpt-charter').val("");
+        $('#specialProduct > #special_' + count + ' > #special > #specialCount > .inpt-charter').val("");
+        $('#specialProduct > #special_' + count + ' > #ReminderNoteDiv > #Reminder > .inpt-charter ').val("");
+    }
+    let SpecialCount = 1;
+    function AddSpecialRecipe() {
+        $('#SpecialProductRecipe').clone().attr('id', 'specialC_' + SpecialCount + '').appendTo($('#SpecialProductRecipeClone'));
+        $('#SpecialProductRecipeClone > #specialC_' + SpecialCount + ' > #SelectBoxDiv > .chosen-select').attr('id', 'selectBox_' + SpecialCount + '');
+
+        $('#selectBox_' + SpecialCount + '').chosen("destroy");
+        $('#selectBox_' + SpecialCount + '').chosen();
+
+        $('#SpecialProductRecipeClone > #specialC_' + SpecialCount + ' > #SelectBoxDiv > #SelectSpecialProduct_chosen').css("display", "none");
+        $('#specialC_' + SpecialCount + '_chosen').css("display", "inline-block");
+
+
+        $('#SpecialProductRecipeClone > #specialC_' + SpecialCount + ' > #SpecialProductRecipeCount > .inpt-charter').val("");
+
+        $.get('/Order/ListSpecialProduct').done(function (data) {
+            $('#selectBox_' + SpecialCount + '').empty();
+            $('#selectBox_' + SpecialCount + '').append('<option></option>');
+            for (var i = 0; i < data.$values.length; i++) {
+                $('#selectBox_' + SpecialCount + '').append('<option value="' + data.$values[i].id + '">' + data.$values[i].name + '</option>')
+            }
+        })
+        $('.chosen-select').chosen();
+        SpecialCount++;
+    }
+</script>

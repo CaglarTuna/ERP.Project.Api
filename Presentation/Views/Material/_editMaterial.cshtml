@@ -1,0 +1,235 @@
+﻿@model MaterialResponseModel
+
+<div class="row" style="margin-top:10px">
+
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Malzeme Kodu </label>
+        <div class="col-xs-8">
+            <input type="text" value="@Model.MaterialDTO.Code" name="Code" class="inpt-charter">
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Malzeme Adı </label>
+        <div class="col-xs-8">
+            <input type="text" name="Name" value="@Model.MaterialDTO.Name" class="inpt-charter">
+
+        </div>
+    </div>
+    <input type="hidden" name="Id" value="@Model.MaterialDTO.Id" />
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Malzeme Şekli</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" id="EditShapes" name="ShapeId" class="chosen-select mt20" tabindex="2">
+                <option value=""></option>
+                @foreach (var item in Model.Commons)
+                {
+                    foreach (var shape in item.MaterialShape)
+                    {
+                        if (Model.MaterialDTO.MaterialShape.Id == Convert.ToInt32(shape.Value))
+                        {
+                            <option selected value="@shape.Value">@shape.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@shape.Value">@shape.Text</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group cf Editdiameter">
+        <label class="col-xs-4 control-label">Ölçü 1 (Çap)</label>
+        <div class="col-xs-8">
+            <input type="text" name="Diameter" value="@Model.MaterialDTO.Diameter" class="inpt-charter" placeholder="Ölçü 'çap' olarak girilecek">
+
+        </div>
+    </div>
+    <div class="form-group cf Editlength">
+        <label class="col-xs-4 control-label">Ölçü 2 (Boy)</label>
+        <div class="col-xs-8">
+            <input type="text" name="Length" value="@Model.MaterialDTO.Length" class="inpt-charter" placeholder="Ölçü 'boy' olarak girilecek">
+
+        </div>
+    </div>
+    @if (Model.MaterialDTO.Meter != null)
+    {
+        <div class="form-group cf Editmeter">
+            <label class="col-xs-4 control-label">Ölçü 3 </label>
+            <div class="col-xs-8">
+                <input type="text" name="Meter" class="inpt-charter meter" value="@Model.MaterialDTO.Meter" placeholder="Ölçü 'mm' cinsinden olacak">
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="form-group cf Editmeter " style="display:none;">
+            <label class="col-xs-4 control-label">Ölçü 3 </label>
+            <div class="col-xs-8">
+                <input type="text" name="Meter" class="inpt-charter meter" value="" placeholder="Ölçü 'mm' cinsinden olacak">
+
+            </div>
+        </div>
+    }
+
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Tüketim Birimi</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" name="UnitsOfMeasureId" class="chosen-select mt20" tabindex="2">
+                <option value=""></option>
+                @foreach (var item in Model.Commons)
+                {
+                    foreach (var unitsOfMeasure in item.unitsOfMeasureDTOs)
+                    {
+                        if (Model.MaterialDTO.materialUnitsOfMeasuresDTOs.FirstOrDefault().UnitsOfMeasureId == unitsOfMeasure.Id)
+                        {
+                            <option selected value="@unitsOfMeasure.Id">@unitsOfMeasure.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@unitsOfMeasure.Id">@unitsOfMeasure.Name</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Satın Alma Birimi</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" name="PurchasingUnitId" class="chosen-select mt20" tabindex="2">
+                <option value=""></option>
+                @foreach (var item in Model.Commons)
+                {
+                    @foreach (var units in item.unitsOfMeasureDTOs)
+                    {
+                        if (Model.MaterialDTO.materialUnitsOfMeasuresDTOs.FirstOrDefault().PurchasingUnitId == units.Id)
+                        {
+                            <option value="@units.Id" selected>@units.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@units.Id">@units.Name</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Birim Ölçü</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" name="HeightMeasureId" class="chosen-select mt20" tabindex="2">
+                @foreach (var item in Model.Commons)
+                {
+                    foreach (var height in item.HeightMeasures)
+                    {
+                        if (Model.MaterialDTO.HeightMeasureId == Convert.ToInt32(height.Value))
+                        {
+                            <option value="@height.Value" selected>@height.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@height.Value">@height.Text</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Ham Madde</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" name="rawMaterial[]" multiple class="chosen-select mt20" tabindex="2">
+                <option value=""></option>
+                @foreach (var item in Model.rawMaterials)
+                {
+                    if (Model.MaterialDTO.materialRawMaterial.Any(x => x.RawMaterialId == item.Id))
+                    {
+                        <option selected value="@item.Id">@item.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Maliyet Fiyatı</label>
+        <div class="col-xs-8">
+            <input type="text" name="CostPrice" value="@Model.MaterialDTO.CostPrice" class="inpt-charter">
+        </div>
+    </div>
+
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Döviz</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" name="CurrencyId" class="chosen-select" tabindex="2">
+                <option value=""></option>
+                @foreach (var item in Model.Commons)
+                {
+                    foreach (var currency in item.currenciesDTOs)
+                    {
+                        if (Model.MaterialDTO.CurrencyId == currency.Id)
+                        {
+                            <option value="@currency.Id" selected>@currency.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@currency.Id">@currency.Name</option>
+                        }
+                    }
+                }
+            </select>
+
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Tedarikçi Firma</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" name="compony[]" multiple class="chosen-select" tabindex="2">
+                <option value=""></option>
+                @foreach (var item in Model.companyDTOs)
+                {
+                    if (Model.MaterialDTO.materialSuppliers.Any(x => x.CompanyId == item.Id))
+                    {
+                        <option value="@item.Id" selected>@item.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Minimum Stok Miktarı</label>
+        <div class="col-xs-8">
+            <input type="text" name="MinStockQuantity" value="@Model.MaterialDTO.MinStockQuantity" class="inpt-charter">
+        </div>
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+    $('#EditShapes').change(function () {
+        var shapeValue = $('#EditShapes').val();
+        if (shapeValue == 1) {
+            $('.Editdiameter').css("display", "block");
+            $('.Editlength').css("display", "block");
+            $('.Editmeter').css("display", "none");
+            $('.meter').val('');
+        }
+        else {
+            $('.Editdiameter').css("display", "block");
+            $('.Editlength').css("display", "block");
+            $('.Editmeter').css("display", "block");
+        }
+    })
+</script>

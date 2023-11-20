@@ -1,0 +1,217 @@
+﻿@model List<CategoryDTO>
+@{
+    ViewData["Title"] = "Ürün Kategori";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="fieldset">
+                        <legend class="fieldsetb">Filtreleme Alanı</legend>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-10 col-xs-10">
+                                <form asp-controller="Category" asp-action="ProductCategory" autocomplete="off" method="post">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <input type="text" name="filtre"
+                                                   class="inpt-charter" placeholder="Giriniz...">
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <button style=" float: right;margin-top:10px"
+                                                    type="submit" class="btn-charter-p m-b">
+                                                FİLTRELE
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                                <i data-toggle="modal" data-target="#MdlAddProdCat"
+                                   class="fa fa-plus-square" style="font-size:35px; cursor: pointer; float:right"></i>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <!--LİSTE ALANI-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="fieldset">
+                        <legend class="fieldsetb">Ürün Kategori Listesi</legend>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="table-responsive mb10">
+                                    <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                        <thead>
+                                            <tr>
+                                                <th>Ürün Kategori Adı</th>
+                                                <th>Alt Kategori Düzenle</th>
+                                                <th>Üst Kategori Düzenle</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var category in Model)
+                                            {
+
+                                                <tr>
+                                                    <td>@category.CategoryLanguageDTOs.Where(x => x.CategoriesId == category.Id).FirstOrDefault().Name</td>
+                                                    <td></td>
+                                                    <td>
+                                                        <a class="btn btn-info"
+                                                           onclick="getCategory(@category.Id)">Düzenle</a>
+                                                    </td>
+                                                </tr>
+                                                foreach (var item in category.SubCategoryDto)
+                                                {
+                                                    <tr>
+                                                        <td>@category.CategoryLanguageDTOs.Where(x => x.CategoriesId == category.Id).FirstOrDefault().Name - @item.CategoryLanguageDTOs.FirstOrDefault().Name</td>
+                                                        <td>
+                                                            <a class="btn btn-info" onclick="getCategory(@item.Id)">Düzenle</a>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                }
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="MdlAddProdCat" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-controller="Category" asp-action="AddCategory"
+                      data-ajax-success="onSuccess" data-ajax-begin="OnBegin"
+                      data-ajax="true" data-ajax-method="POST" autocomplete="off">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Ürün Kategorisi Ekle</h4>
+                    </div>
+                    <div class="modal-body" style="margin-bottom:3%;">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                <label class="control-label">Ürün Üst Kategorisi :</label>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <select data-placeholder="Seçiniz ..." required="required" name="TopCategoryId" class="chosen-select">
+                                    <option value="0" selected></option>
+                                    @foreach (var item in Model)
+                                    {
+                                        <option value="@item.Id">@item.CategoryLanguageDTOs.FirstOrDefault().Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 3%;">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                <label class="control-label">Ürün Kategori Adı :</label>
+                            </div>
+
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" required="required" name="Name" class="inpt-charter" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary onbeginClick" style="margin-right:12px">KAYDET</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="MdlEditProdCat" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="Category" asp-action="editCategory"
+                  data-ajax-success="onEditSuccess"  data-ajax-begin="OnBegin"
+                  data-ajax="true" data-ajax-method="POST">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Ürün Kategorisi Güncelle</h4>
+                </div>
+                <div class="modal-body editCategory" style="margin-bottom:3%;">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary onbeginClick" style="margin-right:12px">KAYDET</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function LoadEditPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    var onSuccess = function () {
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Kayıt İşlemi Başarılı',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        LoadEditPage();
+    };
+    var cate = $('.editCategory');
+    function getCategory(id) {
+        $.get('/Category/editProductCategory', { id: id }).done(function (data) {
+            cate.empty();
+            cate.html(data);
+            $('#MdlEditProdCat').modal('show');
+        })
+    }
+    function LoadEditPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    var onEditSuccess = function () {
+        Swal.fire({
+            icon: 'success',
+            title: 'Güncelleme İşlemi Başarılı',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        LoadEditPage();
+    };
+    function OnBegin() {
+        $('#MdlAddProdCat').modal('hide');
+        $('#MdlEditProdCat').modal('hide');
+        $('.onbeginClick').prop("disabled", true);
+        let timerInterval
+        Swal.fire({
+            title: 'İçerik Güncelleniyo',
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+            },
+            willClose: () => {
+                clearInterval(timerInterval)
+            }
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+            }
+        })
+    }
+</script>

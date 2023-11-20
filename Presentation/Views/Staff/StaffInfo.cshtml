@@ -1,0 +1,72 @@
+﻿@model StaffDTO
+@{
+    ViewData["Title"] = "StaffInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="tabs-container">
+        <ul class="nav nav-tabs tab-border-top-danger">
+            <li class="active"><a asp-controller="Staff" asp-action="StaffInfo" asp-route-id="@Model.Id">Personel Bilgileri</a></li>
+            <li class=""><a asp-controller="Staff" asp-action="StaffEffort" asp-route-id="@Model.Id">Bitirdiği Siparişler & Eforları</a></li>
+        </ul>
+        <div class="tab-content" style="margin-top:20px">
+            <div id="tab-1" class="tab-pane active">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <fieldset class="fieldset">
+                            <legend class="fieldsetb">Info</legend>
+                            <div class="form-group cf">
+                                <label class="col-xs-2 control-label" style="color:black">Ad Soyad</label>
+                                <div class="col-xs-10">
+                                    @Model.Name @Model.Surname
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-2 control-label" style="color:black">Email</label>
+                                <div class="col-xs-10">
+                                    @Model.Email
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-2 control-label" style="color:black">Telefon</label>
+                                <div class="col-xs-10">
+                                    @Model.Telephone
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-2 control-label" style="color:black">Departman</label>
+                                <div class="col-xs-10">
+                                    @Model.Department
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-2 control-label" style="color:black">Rol</label>
+                                <div class="col-xs-10">
+                                    @foreach (var item in Model.StaffRolesDTO)
+                                    {
+                                        <span>@item.Roles.Name</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="form-group cf">
+                                <label class="col-xs-2 control-label" style="color:black">Yetki</label>
+                                @foreach (var item in Model.StaffProcessPermisionsDTOs)
+                                {
+                                    <div class="col-xs-10">
+                                        @foreach (var procces in item.ProcessDTO.ProcessLanguage)
+                                        {
+                                            <span>@procces.Name</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

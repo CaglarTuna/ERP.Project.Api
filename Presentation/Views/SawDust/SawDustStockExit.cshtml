@@ -1,0 +1,133 @@
+﻿@model SawDustResponseModel
+@{
+    ViewData["Title"] = "SawDustStockExit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Talaş Stok Çıkışı</legend>
+                <form asp-controller="SawDust" asp-action="SawDustStockExitAdd" autocomplete="off" method="post">
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Sipariş No :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <select data-placeholder="Seçiniz" name="OrderNo" class="chosen-select">
+                                <option value=""></option>
+                                @foreach (var item in Model.Orders)
+                                {
+                                    <option value="@item.Id">@item.OrderNo</option>
+                                }
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Hurdacı :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <select data-placeholder="Seçiniz" name="CompanyId" class="chosen-select">
+                                <option value=""></option>
+                                @foreach (var item in Model.Companies)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Malzeme Adı :</label>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <select data-placeholder="Seçiniz" name="MaterialId" class="chosen-select">
+                                <option value=""></option>
+                                @foreach (var item in Model.Materials)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Maliyet :</label>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <input type="text" name="Price" class="inpt-charter">
+
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <select data-placeholder="Para Birimi" name="CurrencyId" class="chosen-select">
+                                <option value=""></option>
+                                @foreach (var item in Model.Commons)
+                                {
+                                    foreach (var currency in item.currenciesDTOs)
+                                    {
+
+                                        <option value="@currency.Id">@currency.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Adet / Miktar :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <input type="text" name="Quantity" class="inpt-charter">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Fatura No :</label>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <input type="text" name="InvoiceNo" class="inpt-charter">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Fatura Tarihi :</label>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <div class="input-group date">
+                                <input type="text" class="inpt-charter DatetimeChart" name="InvoiceDate" value="">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:3%;">
+                        <div class="col-lg-12 col-md-12 col-md-12 col-xs-12">
+                            <button style=" float: right"
+                                    type="submit" class="btn btn-info">
+                                KAYDET
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.DatetimeChart').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            format: "dd/mm/yyyy",
+            language: "tr"
+        });
+    });
+</script>

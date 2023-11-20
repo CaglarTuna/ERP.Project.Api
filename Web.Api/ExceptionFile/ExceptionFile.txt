@@ -1,0 +1,30 @@
+Web.Api.Controllers - OrderController - SaveProduction 23.02.2022 17:29:50
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - StaffController - SaveStaffProccess 23.02.2022 17:37:57
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - ProductController - AddProductStockEntry 23.02.2022 17:40:26
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - ProductController - AddProductStockEntry 23.02.2022 17:43:37
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - StaffController - SaveStaffProccess 24.02.2022 12:07:24
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - TodoController - SaveTodo 24.02.2022 17:12:02
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - StaffController - SaveStaffProccess 24.02.2022 22:45:05
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - TodoController - SaveTodo 25.02.2022 09:37:18
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - TodoController - SaveTodo 25.02.2022 09:43:11
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - OrderController - Edit 25.02.2022 14:54:57
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - ProcessController - List 25.02.2022 16:14:38
+A transport-level error has occurred when receiving results from the server. (provider: Session Provider, error: 19 - Physical connection is not usable)
+Web.Api.Controllers - MaterialController - SaveMaterial 28.02.2022 13:57:53
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - MaterialController - SaveMaterial 28.02.2022 14:02:05
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - ProductController - SaveProductPrescription 28.02.2022 21:45:37
+An error occurred while updating the entries. See the inner exception for details.
+Web.Api.Controllers - OrderController - OrderProductStock 3.03.2022 09:43:28
+Object reference not set to an instance of an object.

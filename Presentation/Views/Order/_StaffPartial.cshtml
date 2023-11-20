@@ -1,0 +1,87 @@
+﻿@model ProductionModel
+@{
+    var SelectCount = 0;
+    int selectListCount = 2;
+}
+<div class="row" style="margin-top:3%;margin-bottom:3%;">
+    <div class="col-md-12 col-sm-12 ">
+        @foreach (var item in Model.productProcesses.Take(1))
+        {
+            int i = 1;
+            <div class="row" style="margin-bottom:3%;">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    <label class="control-label">@item.Process.ProcessLanguage.FirstOrDefault().Name @i Ustası: </label>
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+
+                    <select data-placeholder="Seçiniz" name="StaffId" class="chosen-select selectList Stafflist">
+                        <option value=""></option>
+                        @foreach (var Staff in Model.staffs)
+                        {
+                            <option value="@Staff.Id">@Staff.Name @Staff.Surname</option>
+                        }
+                    </select>
+                    <input type="hidden" name="ProcessId" value="@item.ProcessId" />
+                    <input type="hidden" name="ProductId" value="@item.ProductId" />
+                    <input type="hidden" name="name" value="" />
+                </div>
+            </div>
+            i++;
+        }
+        @foreach (var item in Model.productProcesses.Skip(1))
+        {
+            SelectCount++;
+
+            <div class="row" style="margin-bottom:3%;">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    <label class="control-label">@item.Process.ProcessLanguage.FirstOrDefault().Name @selectListCount Ustası: </label>
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+
+                    <select data-placeholder="Seçiniz" id="Select_@selectListCount" name="StaffId" class="chosen-select selectList">
+                        <option value=""></option>
+                        @foreach (var Staff in Model.staffs)
+                        {
+                            <option value="@Staff.Id">@Staff.Name @Staff.Surname</option>
+                        }
+                    </select>
+                    <input type="hidden" name="ProcessId" value="@item.ProcessId" />
+                    <input type="hidden" name="ProductId" value="@item.ProductId" />
+                </div>
+            </div>
+            selectListCount++;
+        }
+        @{
+            selectListCount = 2;
+        }
+
+    <input type="hidden" name="OrderProductId" value="@ViewBag.orderId" />
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+    var count = 2;
+    $('.Stafflist').change(function () {
+        var SelectedStaff = $(this).children("option:selected").val();
+        var selectCount =@SelectCount;
+        var model =@Html.Raw(Json.Serialize(Model.staffs));
+        for (var i = 0; i < selectCount+1; i++) {
+            $('#Select_' + count + '').empty();
+            $('#Select_' + count + '').append("<option></option>");
+            for (var j = 0; j < model.$values.length; j++) {
+
+                if (parseInt(model.$values[j].id) == SelectedStaff) {
+                    $('#Select_' + count + '').append("<option selected value='" + model.$values[j].id + "'>" + model.$values[j].name+" "+ model.$values[j].surname + "</option>");
+                    $('#Select_' + count + '').trigger("chosen:updated");
+                }
+                else {
+                    $('#Select_' + count + '').append("<option value='" + model.$values[j].id + "'>" + model.$values[j].name + " " + model.$values[j].surname + "</option>");
+                    $('#Select_' + count + '').trigger("chosen:updated");
+                }
+            }
+            count++;
+        }
+        count = 2;
+    });
+
+</script>

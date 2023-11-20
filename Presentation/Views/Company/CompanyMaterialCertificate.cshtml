@@ -1,0 +1,91 @@
+﻿@model List<MaterialCertificatesDTO>
+@{
+    ViewData["Title"] = "CompanyMaterialCertificate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="tabs-container">
+        <ul class="nav nav-tabs tab-border-top-danger">
+            <li class=""><a asp-controller="Company" asp-action="CompanyInfo" asp-route-id="@Model.FirstOrDefault().CompanyId">Firma Bilgileri</a></li>
+            <li class=""><a asp-controller="Company" asp-action="CompanyManagementAdress" asp-route-id="@Model.FirstOrDefault().CompanyId">Firma Adres Bilgileri</a></li>
+            <li class=""><a asp-controller="Company" asp-action="CompanyOrderHistory" asp-route-id="@Model.FirstOrDefault().CompanyId">Firma Sipariş Geçmişi</a></li>
+            <li class="active"><a asp-controller="Company" asp-action="CompanyMaterialCertificate" asp-route-id="@Model.FirstOrDefault().CompanyId">Firma Malzeme Sertifikaları</a></li>
+        </ul>
+        <div class="tab-content" style="margin-top:20px">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form asp-controller="Company" asp-action="CompanyOrderHistory" method="post">
+                        <fieldset class="fieldset">
+                            <legend class="fieldsetb">Filtreleme Alanı</legend>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="input-group date">
+                                        <input type="hidden" id="OrderId" name="id" value="@ViewBag.ıd" />
+                                        <input type="datetime" id="FistDateVal" class="inpt-charter DatetimeChart" value="" name="FirstDate">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="input-group date">
+                                        <input type="datetime" class="inpt-charter DatetimeChart" id="LastDateVal" value="" name="LastDate">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:3%">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <input type="text" name="Filter" class="inpt-charter" placeholder="Giriniz..." id="FilterVal">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:3%">
+                                <div class="col-lg-12 col-md-12 col-md-12 col-xs-12">
+                                    <button style=" float: right"
+                                            type="submit"
+                                            class="btn-charter-p m-b" id="filterButton">
+                                        FİLTRELE
+                                    </button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="fieldset">
+                        <legend class="fieldsetb">Firma Ait Malzeme Sertifikaları</legend>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="table-responsive mb10">
+                                    <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                        <thead>
+                                            <tr>
+                                                <th>Görüntüle</th>
+                                                <th>Firma Adı</th>
+                                                <th>Malzeme Adı</th>
+                                                <th>Sertifika Adı</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                var fileName = item.Certificate.Split(".")[0];
+                                                <tr>
+                                                    <td><a href="~/MaterialCertificate/@item.Certificate" target="_blank" class="btn btn-info">Görüntüle</a> </td>
+                                                    <td>@item.Companies.Name</td>
+                                                    <td>@item.Materials.Name</td>
+                                                    <td>@fileName</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

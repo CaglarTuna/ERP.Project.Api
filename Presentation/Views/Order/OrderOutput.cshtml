@@ -1,0 +1,193 @@
+﻿@model List<OrderDTO>
+@{
+    ViewData["Title"] = "OrderOutput";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="fieldset">
+                        <legend class="fieldsetb">Filtreleme Alanı</legend>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="input-group date">
+                                    <input type="text" class="inpt-charter" value="">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="input-group date">
+                                    <input type="text" class="inpt-charter" value="">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top:3%">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <input type="text" name=""
+                                               class="inpt-charter" placeholder="Giriniz...">
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <button style=" float: right;margin-top:10px"
+                                                type="submit" class="btn-charter-p m-b">
+                                            FİLTRELE
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <!--LİSTE ALANI-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="fieldset">
+                        <legend class="fieldsetb">Depo Çıkış Listesi</legend>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="table-responsive mb10">
+                                    <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                        <thead>
+                                            <tr>
+                                                <th>Detay Gör</th>
+                                                <th>Üretim Durumu</th>
+                                                <th>Sipariş No</th>
+                                                <th>Teslimat Aşaması</th>
+                                                <th>Teslim Eden</th>
+                                                <th>Teslimat</th>
+                                                <th>İrsaliye Yazdır</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.OrderByDescending(x => x.Id))
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <a onclick="DetailPopUp(@item.Id)" class="btn btn-info">Detay</a>
+                                                    </td>
+                                                    <td>Teslimata Hazır</td>
+                                                    <td>@item.OrderNo</td>
+                                                    <td>@item.Statuss.Name</td>
+                                                    @if (item.DellveryStaffId != null)
+                                                    {
+                                                        <td>@item.Staff.Name @item.Staff.Surname</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>-</td>
+                                                    }
+                                                    <td>
+                                                        @if (item.OrderStatuId != 6)
+                                                        {
+                                                            <button type="button" class="btn btn-info" disabled>
+                                                                Teslim Edildi
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button type="button" onclick="DeliveryModel(@item.Id)" class="btn btn-info">
+                                                                Teslim Et
+                                                            </button>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (item.OrderStatuId == 6 || item.OrderStatuId == 5)
+                                                        {
+                                                            <button type="button" class="btn btn-info" disabled>
+                                                                İrsaliye Oluşturuldu
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button type="button" onclick="CreateWayBill(@item.Id)" class="btn btn-info">
+                                                                Oluştur ve Muhasebeye Gönder
+                                                            </button>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="MdlDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Detay</h4>
+                </div>
+                <div class="modal-body mdlBdy">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="MdlDelivery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+    </div>
+</div>
+<script>
+    var mdl = $('.mdlBdy');
+    function DetailPopUp(id) {
+        $.get('/Order/OrderOutputDetail', { id: id }).done(function (data) {
+            mdl.empty();
+            mdl.append(data);
+            $('#MdlDetail').modal('show');
+        })
+    }
+    var mdlDelivery = $('#MdlDelivery');
+    function DeliveryModel(id) {
+        $.get('/Order/OrderDelivery', { id: id }).done(function (data) {
+            mdlDelivery.empty();
+            mdlDelivery.append(data);
+            $('#MdlDelivery').modal('show');
+        })
+    }
+    function LoadEditPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    function CreateWayBill(id) {
+        $.get('/Order/CreateWayBill', { id: id }).done(function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Kayıt İşlemi Başarılı',
+                showConfirmButton: false,
+                timer: 2000
+            });
+            LoadEditPage();
+        })
+    }
+    var onSuccesss = function () {
+        $('#MdlDelivery').modal('hide');
+        Swal.fire({
+            icon: 'success',
+            title: 'Teslimat Başarı İle Gerçekleşti',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        LoadEditPage();
+    };
+</script>

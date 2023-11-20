@@ -1,0 +1,109 @@
+﻿@model ConsuptionMaterialResponseModel
+<div class="row" style="margin-top:10px">
+
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Sarf Malzeme Kodu </label>
+        <div class="col-xs-8">
+            <input type="text" placeholder="SarfM30" name="Code" value="@Model.consumptionMaterial.Code" class="inpt-charter">
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Sarf Malzeme Adı </label>
+        <div class="col-xs-8">
+            <input type="text" placeholder="Elmas Bıçak" name="Name" value="@Model.consumptionMaterial.Name" class="inpt-charter">
+
+        </div>
+    </div>
+    <input type="hidden" name="Id" value="@Model.consumptionMaterial.Id" />
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Birimi</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" name="UnitsOfMeasureId" class="chosen-select" tabindex="2">
+                @foreach (var item in Model.commonDTOs)
+                {
+                    foreach (var unit in item.unitsOfMeasureDTOs)
+                    {
+                        if (Model.consumptionMaterial.UnitsOfMeasure.Id == unit.Id)
+                        {
+                            <option value="@unit.Id" selected>@unit.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@unit.Id">@unit.Name</option>
+                        }
+                    }
+                }
+
+
+            </select>
+
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Maliyet Fiyatı</label>
+        <div class="col-xs-8">
+            <input type="text" name="CostPrice" value="@Model.consumptionMaterial.CostPrice" class="inpt-charter">
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Döviz</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" name="CurrencyId" class="chosen-select" tabindex="2">
+                @foreach (var item in Model.commonDTOs)
+                {
+                    foreach (var currency in item.currenciesDTOs)
+                    {
+                        if (Model.consumptionMaterial.Currencies.Id == currency.Id)
+                        {
+                            <option value="@currency.Id" selected>@currency.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@currency.Id">@currency.Name</option>
+                        }
+                    }
+                }
+            </select>
+
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Tedarikçi Firma</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" multiple class="chosen-select" name="CompanyId[]" tabindex="2">
+                @foreach (var item in Model.companies)
+                {
+                    if (Model.consumptionMaterial.ConsumptionMaterialSuppliers.Where(x => x.CompanyId == item.Id).Any())
+                    {
+
+                        <option value="@item.Id" selected>@item.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Minimum Stok Miktarı</label>
+        <div class="col-xs-8">
+            <input type="text" name="MinStockQuantity" value="@Model.consumptionMaterial.MinStockQuantity" class="inpt-charter">
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.chosen-select').chosen();
+    var onSuccess = function () {
+        $('#editModal').modal('hide');
+        Swal.fire({
+            icon: 'success',
+            title: 'Güncelleme İşlemi Başarılı',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        LoadEditPage();
+    };
+</script>

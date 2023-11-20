@@ -1,0 +1,109 @@
+﻿@model List<CategoryDTO>
+@{
+    ViewData["Title"] = "Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Filtreleme Alanı</legend>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <select data-placeholder="Ürün Kategorisini Seçiniz..." name="" id="FilterCategory" class="chosen-select">
+                            <option></option>
+                            @foreach (var item in Model)
+                            {
+                                <option value="@item.Id">@item.CategoryLanguageDTOs.FirstOrDefault().Name</option>
+                                foreach (var Sub in item.SubCategoryDto)
+                                {
+                                    <option value="@Sub.Id">=> @Sub.CategoryLanguageDTOs.FirstOrDefault().Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                        <input type="text" name="filtre" class="inpt-charter" id="text" placeholder="Giriniz...">
+                    </div>
+                </div>
+                <div class="row" style="margin-top:20px">
+                    <div class="col-lg-12 col-md-12 col-md-12 col-xs-12">
+                        <button style=" float: right" type="button" id="filterButton" class="btn-charter-p m-b">FİLTRELE</button>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Ürünler Listesi</legend>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-responsive mb10">
+                            <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                <thead>
+                                    <tr>
+                                        <th>Detay Gör</th>
+                                        <th>Ürün Tipi</th>
+                                        <th>Üretim Seri No</th>
+                                        <th>Barkod</th>
+                                        <th>Ürün Kategorisi</th>
+                                        <th>Ürün Adı</th>
+                                        <th>Ürün Stoğu</th>
+                                        <th>Birim Yaklaşık Maliyeti</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ProductList">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<script>
+    $('#filterButton').click(function () {
+        var text = $('#text').val();
+        var category = $('#FilterCategory').val();
+        $.ajax({
+            url: '/Product/ProductMainList',
+            data: { text: text, category: category },
+            success: function (data) {
+                $('#ProductList').empty();
+                $('#ProductList').html(data);
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Aradığınız Ürün Bulunamadı',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        })
+    });
+    $('#FilterCategory').change(function () {
+        var category = $('#FilterCategory').val();
+        var text = $('#text').val();
+        $.ajax({
+            url: '/Product/ProductMainList',
+            data: { text: text, category: category },
+            success: function (data) {
+                $('#ProductList').empty();
+                $('#ProductList').html(data);
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Aradığınız Ürün Bulunamadı',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        })
+    });
+</script>

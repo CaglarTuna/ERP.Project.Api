@@ -1,0 +1,84 @@
+﻿@model ConsuptionMaterialResponseModel
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Sarf Malzeme :</label>
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+
+        <select data-placeholder="Seçiniz" name="ConsumptionMaterialId" class="chosen-select">
+            <option value=""></option>
+            @foreach (var item in Model.consumptionMaterialDTOs)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Tezgah :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+
+        <select data-placeholder="Seçiniz" name="StandId" class="chosen-select">
+            <option value=""></option>
+            @foreach (var item in Model.standDTOs)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Sipariş :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+
+        <select data-placeholder="Seçiniz" name="OrderId" class="chosen-select">
+            <option value=""></option>
+            @foreach (var item in Model.orderDTOs)
+            {
+                <option value="@item.Id">@item.OrderNo</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Teslim Alan Usta :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+
+        <select data-placeholder="Seçiniz" name="StaffId" class="chosen-select">
+            <option value=""></option>
+            @foreach (var item in Model.staffDTOs)
+            {
+                <option value="@item.Id">@item.Name @item.Surname</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Teslim Edilen Adet / Toplam Miktar :</label>
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <input type="text" name="Quantity" placeholder="" class="inpt-charter">
+    </div>
+</div>
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Teslimat Notu :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <textarea name="DeliveryNote" rows="8" cols="40" class="inpt-charter"></textarea>
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+</script>

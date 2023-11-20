@@ -1,0 +1,316 @@
+﻿@model OfferResponseModel
+@{
+    ViewData["Title"] = "OfferList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="tabs-container">
+                <ul class="nav nav-tabs tab-border-top-danger">
+                    <li class=""><a asp-controller="Order" asp-action="OrderDetailInfo" asp-route-id="@Model.OrderDTO.Id">Info&Ürünler</a></li>
+                    <li class=""><a asp-controller="Order" asp-action="MeetingRecordList" asp-route-id="@Model.OrderDTO.Id">Görüşme Kaydı</a></li>
+                    <li class="active"><a asp-controller="Order" asp-action="OfferList" asp-route-id="@Model.OrderDTO.Id">Teklif Oluştur&Teklifler</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="panel-body">
+                            <!-- tab1 -->
+                            <!--FİLTER AREA-->
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldsetb">Yeni Teklif Oluştur</legend>
+                                        <form action="/Order/AddOffer" method="post" autocomplete="off">
+                                            <div class="form-group cf">
+                                                <div class="col-xs-12">
+                                                    <div class="table-responsive mb10">
+                                                        <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Ürün Adı</th>
+                                                                    <th>Adet</th>
+                                                                    <th>Birim Yaklaşık Maliyeti</th>
+                                                                    <th>Toplam Yaklaşık Maliyet</th>
+                                                                    <th>Birim Teklif Tutarı</th>
+                                                                    <th>Satır Teklif Tutarı</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var item in Model.productDTOs)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            @item.Products.Name
+                                                                            <input type="hidden" name="ProductId[]" value="@item.ProductId" />
+                                                                            <input type="hidden" name="OrderId" value="@Model.OrderDTO.Id" />
+                                                                        </td>
+
+
+                                                                        <td>
+                                                                            <input type="hidden" id="OfferQuantity_@item.Id" name="Quantitiy[]" value="@item.Quantitiy" />
+                                                                            @item.Quantitiy
+                                                                        </td>
+                                                                        <td>
+                                                                            @item.Products.ProductCost
+                                                                        </td>
+                                                                        <td>
+                                                                            @{
+                                                                                var price = Convert.ToInt32(item.Products.ProductCost);
+                                                                                var quantity = item.Quantitiy;
+                                                                                var ProductPrice = quantity * price;
+                                                                            }
+                                                                            @ProductPrice
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="inpt-charter" name="UnitOfferAmount[]" id="unitAmount_@item.Id" onkeyup="culculateFunction(@item.Id)" value="">
+
+                                                                        </td>
+                                                                        <td>
+                                                                            <span id="LineOffer_@item.Id"></span>
+                                                                            <input type="hidden" id="LineOffers_@item.Id" name="LineOfferAmount[]" value="" />
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-xs-12">
+                                                    <div class="form-group cf">
+                                                        <label class="col-xs-2 control-label" style="color:black">Döviz :</label>
+                                                        <div class="col-xs-10">
+                                                            <select data-placeholder="Seçiniz" name="CurrencyId" required="required" id="currencySelect" class="chosen-select" tabindex="2">
+                                                                <option value=""></option>
+                                                                @foreach (var item in Model.commons)
+                                                                {
+                                                                    foreach (var currency in item.currenciesDTOs)
+                                                                    {
+                                                                        <option value="@currency.Id">@currency.Name</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group cf">
+                                                        <label class="col-xs-2 control-label" style="color:black">Toplam Satır Teklif Tutarı :</label>
+                                                        <div class="col-xs-10">
+                                                            <input type="hidden" id="totalOfferPrice" name="UnitCost" value="" />
+                                                            <span id="totalLinePrice"></span> <span class="currencyValue">TL</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group cf">
+                                                        <label class="col-xs-2 control-label" style="color:black">KDV(%18) :</label>
+                                                        <div class="col-xs-10">
+                                                            <input type="hidden" name="Kdv" id="totalKdvPrice" value="" />
+                                                            <span id="KdvPrice"></span> <span class="currencyValue">TL</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group cf">
+                                                        <label class="col-xs-2 control-label" style="color:black">Toplam Teklif Tutarı :</label>
+                                                        <div class="col-xs-10">
+                                                            <input type="hidden" name="TotalCost" id="totalOfferPricevalue" value="" />
+                                                            <span id="topOfferPrice"></span> <span class="currencyValue">TL</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group cf">
+                                                        <label class="col-xs-2 control-label" required="required" style="color:black">Tahmini Bitiş Zamanı :</label>
+                                                        <div class="col-xs-10">
+                                                            <div class="input-group date">
+                                                                <input type="datetime" class="inpt-charter datetimeValue" name="FinishDate" value="">
+                                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group cf">
+                                                        <label class="col-xs-2 control-label" style="color:black">Ödeme Vadesi :</label>
+                                                        <div class="col-xs-10">
+                                                            <select data-placeholder="Seçiniz" name="PaymentTerm" required="required" id="" class="chosen-select" tabindex="2">
+                                                                <option value="1">Peşin</option>
+                                                                <option value="30">30 Gün vade</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group cf">
+                                                        <div class="col-xs-10">
+                                                            <button type="submit" class="btn btn-info">Teklif Oluştur ve Pdfe Aktar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </fieldset>
+                                </div>
+                            </div>
+
+
+                            <div class="row" style="margin-top:3%;">
+                                <div class="col-lg-12">
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldsetb">Siparişin Teklif Geçmişi</legend>
+                                        <!-- insert element row -->
+                                        <div class="row">
+                                            <div class="col-xs-12">
+
+                                                <!-- liste -->
+                                                <div class="form-group cf">
+                                                    <div class="col-xs-12">
+                                                        <div class="table-responsive mb10">
+                                                            <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Teklif Detayı</th>
+                                                                        <th>Teklif Tarihi</th>
+                                                                        <th>Toplam Teklif Tutarı</th>
+                                                                        <th>Teklif Durumu</th>
+                                                                        <th>Müşteri Cevabı</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var item in Model.offerDTOs.Where(x => x.OrderId == Model.OrderDTO.Id).OrderByDescending(x => x.Id).GroupBy(x => x.UnitCost).Select(x => x.First()))
+                                                                    {
+                                                                        <tr>
+                                                                            <td>
+                                                                                <a onclick="modal(@item.OrderId)" class="btn btn-info">Edit</a>
+                                                                            </td>
+                                                                            <td>
+                                                                                @item.CreateDate
+                                                                            </td>
+                                                                            <td>
+                                                                                @item.TotalCost @item.Currencies.Name
+                                                                            </td>
+                                                                            <td>
+                                                                                @if (item.OfferStatuId == 1)
+                                                                                {
+                                                                                    <span>Kabul</span>
+                                                                                }
+                                                                                else if (item.OfferStatuId == 2)
+                                                                                {
+                                                                                    <span>Red</span>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <span>Süreçte</span>
+                                                                                }
+                                                                            </td>
+                                                                            <td>
+                                                                                @item.CustomerReply
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <!-- liste -->
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Edit POP-UP-->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width:100%">
+                <form asp-controller="Order" asp-action="CustomerReply"
+                      data-ajax-success="EditOnSuccess"
+                      data-ajax="true" data-ajax-method="POST" data-ajax-failure="failed">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Teklif Detayı</h4>
+                    </div>
+
+                    <div class="modal-body ModalEditBody">
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary"
+                                style="margin-right:12px">
+                            KAYDET
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function LoadPage() {
+            setTimeout(function () { window.location.reload() }, 2000);
+        }
+        var totalLinePrice = 0;
+        function culculateFunction(id) {
+            var quantity = $('#OfferQuantity_' + id + '').val();
+            var price = $('#unitAmount_' + id + '').val();
+            var totalPrice = quantity * price;
+            $('#LineOffer_' + id + '').text(totalPrice);
+            $('#LineOffers_' + id + '').val(totalPrice);
+            totalLinePrice += totalPrice;
+            $('#totalLinePrice').text(totalLinePrice);
+            $('#totalOfferPrice').val(totalLinePrice);
+            var ToplamKdv = totalLinePrice + (totalLinePrice * 18 / 100);
+            var kdvToplam = ToplamKdv - totalLinePrice;
+            kdvToplam = kdvToplam.toFixed(2);
+            $('#KdvPrice').text(kdvToplam);
+            $('#totalKdvPrice').val(kdvToplam)
+            $('#topOfferPrice').text(ToplamKdv);
+            $('#totalOfferPricevalue').val(ToplamKdv);
+            var currencyText = $('#currencySelect option:selected').text();
+            $('.currencyValue').text(currencyText);
+
+        }
+        $(function () {
+            $('.datetimeValue').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                format: "dd/mm/yyyy",
+                language: "tr"
+            });
+        });
+
+        function modal(id) {
+            $.get('/Order/OfferRepltPopUp', { id: id }).done(function (data) {
+                $('.ModalEditBody').empty();
+                $('.ModalEditBody').html('');
+                $('.ModalEditBody').html(data);
+                $('#editModal').modal();
+            })
+        }
+        var EditOnSuccess = function () {
+            $('#editModal').modal('hide');
+            Swal.fire({
+                icon: 'success',
+                title: 'İşlem Başarılı',
+                showConfirmButton: false,
+                timer: 2000
+            });
+            LoadPage()
+        };
+        var failed = function (data) {
+            $('#editModal').modal('hide');
+            Swal.fire({
+                icon: 'error',
+                title: 'İşlem Sırasında Hata gerçekleşti',
+                showConfirmButton: false,
+                timer: 2000
+            });
+            LoadPage()
+        }
+    </script>

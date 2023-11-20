@@ -1,0 +1,282 @@
+﻿@model ProductResponseModel
+@{
+    ViewData["Title"] = "EditProductRecipe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    #Select_1_chosen {
+        display: none;
+    }
+</style>
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Ürün Reçetesi Tanımla</legend>
+                <form asp-controller="Product" asp-action="editProductRecipe" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="row" style="margin-top: 3%;">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <label class="control-label">Ürün Kategorisi :</label>
+                                </div>
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                    <select data-placeholder="Ürün Kategorisini Seçiniz..." name="CategoryId" class="chosen-select">
+                                        @foreach (var item in Model.categoryDTOs)
+                                        {
+                                            if (Model.product.CategoryId == item.Id)
+                                            {
+                                                <option value="@item.Id" selected>@item.CategoryLanguageDTOs.FirstOrDefault().Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.Id">@item.CategoryLanguageDTOs.FirstOrDefault().Name</option>
+                                            }
+                                            foreach (var subCategory in item.SubCategoryDto)
+                                            {
+                                                if (Model.product.CategoryId == subCategory.Id)
+                                                {
+                                                    <option selected value="@subCategory.Id">=> @subCategory.CategoryLanguageDTOs.FirstOrDefault().Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@subCategory.Id">=> @subCategory.CategoryLanguageDTOs.FirstOrDefault().Name</option>
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="Id" value="@Model.product.Id" />
+                            <div class="row" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <label class="control-label">Ürün Adı :</label>
+                                </div>
+
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                    <input type="text" name="Name" value="@Model.product.Name" placeholder="" class="inpt-charter">
+                                </div>
+                            </div>
+
+                            <div class="row" id="MaterialList_1" style="margin-top: 3%;">
+
+                                @foreach (var material in Model.product.productMaterialDTOs)
+                                {
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="Material" style="margin-bottom:10px;">
+                                        <select data-placeholder="Malzeme"
+                                                class="chosen-select" name="MaterialId[]">
+                                            <option value=""></option>
+                                            @foreach (var item in Model.materialDTOs)
+                                            {
+                                                if (item.Id == material.MaterialId)
+                                                {
+                                                    <option value="@item.Id" selected>@item.Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.Id">@item.Name</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+
+                                   
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="margin-bottom:10px;">
+                                        <input type="text" id="Count_1" name="Count[]" placeholder="Adet" value="@material.Count" class="inpt-charter">
+                                    </div>
+
+                                }
+                            </div>
+                            <div class="row" id="MaterialList_2" style="margin-top: 3%; display:none;">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="Material">
+                                    <select data-placeholder="Malzeme"
+                                            class="chosen-select">
+                                        <option value=""></option>
+                                        @foreach (var item in Model.materialDTOs)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <input type="text" id="Count_1" placeholder="Adet" class="inpt-charter">
+                                </div>
+                            </div>
+                            <div id="newSelectMaterial"></div>
+
+                            <div class="row" id="" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-md-4 col-xs-4">
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-md-4 col-xs-4">
+                                    @*<button style=" float: right" type="submit"
+                                                class="btn btn-info">
+                                            HESAPLAMA ARACI
+                                        </button>*@
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-md-4 col-xs-4">
+                                    <button type="button" onclick="SatırEkle()" class="fa fa-plus-square btn btn-info"
+                                            style="float: right; cursor: pointer;">
+                                        Yeni Satır Ekle
+                                    </button>
+                                </div>
+
+                            </div>
+
+                            <div class="row" id="ProccessList" style="margin-top: 3%;">
+                                @foreach (var productProcces in Model.product.productProcessDTOs)
+                                {
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" id="proccess" style="margin-bottom:10px;">
+                                        <select name="ProcessId[]" data-placeholder="İşlem"
+                                                class="chosen-select">
+                                            <option value=""></option>
+                                            @foreach (var item in Model.processDTOs)
+                                            {
+                                                if (item.Id == productProcces.ProcessId)
+                                                {
+                                                    <option value="@item.Id" selected>@item.ProcessLanguage.FirstOrDefault().Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.Id">@item.ProcessLanguage.FirstOrDefault().Name</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" style="margin-bottom:10px;">
+                                        <input type="text" name="ProcessDuration[]" id="ProccesDuration" placeholder="Süre - dk" value="@productProcces.ProcessDuration" class="inpt-charter">
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" style="margin-bottom:10px;">
+                                        <input type="text" name="ProcessOrderNo[]" id="ProccessOrderNo" placeholder="Sıra" value="@productProcces.ProcessOrderNo" class="inpt-charter">
+                                    </div>
+
+                                }
+                            </div>
+                            <div class="row" id="ProccessList_1" style="margin-top: 3%; display:none;">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" id="proccess">
+                                    <select data-placeholder="İşlem"
+                                            class="chosen-select">
+                                        <option value=""></option>
+                                        @foreach (var item in Model.processDTOs)
+                                        {
+                                            <option value="@item.Id">@item.ProcessLanguage.FirstOrDefault().Name</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <input type="text" id="ProccesDuration" placeholder="Süre - dk" class="inpt-charter">
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <input type="text" id="ProccessOrderNo" placeholder="Sıra" class="inpt-charter">
+                                </div>
+                            </div>
+                            <div id="NewProccess"></div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-md-12 col-xs-12" style="margin-top:3%;">
+                                    <button type="button" onclick="AddProccess()" class="fa fa-plus-square btn btn-info"
+                                            style="float: right; cursor: pointer;">
+                                        Yeni Satır Ekle
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <label class="control-label">Teknik Resim :</label>
+                                </div>
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                    <input type="file"
+                                           class="inpt-charter file" name="technicalDrawing">
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <label class="control-label">Teknik Pdf :</label>
+                                </div>
+
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                    <input type="file"
+                                           class="inpt-charter  file" name="technicalDocument">
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 3%;">
+
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <label class="control-label">Açıklama :</label>
+                                </div>
+
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                    <textarea name="ProductDescription" rows="8" cols="40" class="inpt-charter">@Model.product.ProductDescription</textarea>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:20px; margin-right:20px">
+                            <button style=" float: right; margin-top: 20px" type="submit" class="btn btn-info">KAYDET</button>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<script>
+    let sayi = 2;
+    function SatırEkle() {
+        sayi++;
+        $('#MaterialList_2').clone().attr('id', 'choosenSelect_' + sayi + '').appendTo($('#newSelectMaterial'));
+        $('#choosenSelect_' + sayi + '').css("display", "block");
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Material > .chosen-select').attr('id', 'Select_' + sayi + '');
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Material > .chosen-select').attr('name', 'MaterialId[]');
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Measure > .chosen-select').attr('id', 'Measure_' + sayi + '');
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Measure > .chosen-select').attr('name', 'HeightMeasure[]');
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> div > #Count_1').attr('name', 'Count[]')
+
+        $('#Select_' + sayi + '').chosen("destroy");
+        $('#Select_' + sayi + '').chosen();
+        $('#Measure_' + sayi + '').chosen("destroy");
+        $('#Measure_' + sayi + '').chosen();
+
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Material > .chosen-container-single').css("display", "none");
+        $('#Select_' + sayi + '_chosen').css("display", "inline-block");
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Measure > .chosen-container-single').css("display", "none");
+        $('#Measure_' + sayi + '_chosen').css("display", "inline-block");
+
+
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Material > #Select_' + sayi + ' > option[value=""]').attr('selected', 'selected');
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> #Measure > #Select_' + sayi + ' > option[value=""]').attr('selected', 'selected');
+        $('#newSelectMaterial > #choosenSelect_' + sayi + '> div > #Count_1').val("");
+    }
+    let count = 1;
+    function AddProccess() {
+        count++;
+        $('#ProccessList_1').clone().attr('id', 'choosenSelect_' + count + '').appendTo($("#NewProccess"));
+        $('#choosenSelect_' + count + '').css("display", "block");
+        $('#NewProccess > #choosenSelect_' + count + ' > #proccess > .chosen-select').attr('id', 'proccess_' + count + '');
+        $('#NewProccess > #choosenSelect_' + count + ' > #proccess > .chosen-select').attr('name', 'ProcessId[]');
+        $('#NewProccess > #choosenSelect_' + count + ' > div > #ProccesDuration').attr('name', 'ProcessDuration[]');
+        $('#NewProccess > #choosenSelect_' + count + ' > div > #ProccessOrderNo').attr('name', 'ProcessOrderNo[]');
+
+        $('#proccess_' + count + '').chosen("destroy");
+        $('#proccess_' + count + '').chosen();
+
+        $('#NewProccess > #choosenSelect_' + count + '> #proccess > .chosen-container-single').css("display", "none");
+        $('#NewProccess > #choosenSelect_' + count + '> #proccess > #proccess_' + count + '_chosen').css("display", "inline-block");
+
+        $('#NewProccess > #choosenSelect_' + count + ' > #proccess > #choosenSelect_' + count + '> option[value=""]').attr('selected', 'selected');
+        $('#NewProccess > #choosenSelect_' + count + ' > div > #ProccesDuration').val("");
+        $('#NewProccess > #choosenSelect_' + count + ' > div > #ProccessOrderNo').val("");
+
+    }
+</script>

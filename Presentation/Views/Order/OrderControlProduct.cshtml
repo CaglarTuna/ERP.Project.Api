@@ -1,0 +1,169 @@
+﻿@model List<OrderDTO>
+@{
+    ViewData["Title"] = "OrderControlProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form asp-controller="Order" asp-action="OrderControlProduct" autocomplete="off" method="post">
+                        <fieldset class="fieldset">
+                            <legend class="fieldsetb">Filtreleme Alanı</legend>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <input type="text" name="filtre"
+                                                   class="inpt-charter" placeholder="Giriniz...">
+                                            <input type="hidden" name="id" value="@Model.FirstOrDefault().Id" />
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <button style=" float: right;margin-top:10px"
+                                                    type="submit" class="btn-charter-p m-b">
+                                                FİLTRELE
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+            <!--LİSTE ALANI-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="fieldset">
+                        <legend class="fieldsetb">Siparişteki Ürünler</legend>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="table-responsive mb10">
+                                    <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                        <thead>
+                                            <tr>
+                                                <th>İmza Kontrolü</th>
+                                                <th>Gerçekleşen Üretim Sayısı Girişi</th>
+                                                <th>Gerkekleşen Üretim Sayısı</th>
+                                                <th>Üretim Tarihi</th>
+                                                <th>Ürün Benzersiz No</th>
+                                                <th>Ürün Adı</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                foreach (var op in item.OrderProducts)
+                                                {
+                                                    <tr>
+                                                        <td><a onclick="Veri(@op.ProductId,@op.Id)" class="btn btn-info">Veri Gir</a> </td>
+                                                        <td>
+                                                            <a onclick="ProductionModal(@op.Quantitiy,@op.Id)" class="btn btn-info">Gerçekleşen Üretim Sayısı Gir</a>
+                                                        </td>
+                                                        <td>
+                                                            @if (op.RealizedProduction != null)
+                                                            {
+                                                                <span>@op.RealizedProduction</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>-</span>
+                                                            }
+                                                        </td>
+                                                        <td>@item.OrderDate</td>
+                                                        <td>@item.OrderNo</td>
+                                                        <td>@op.Products.Name</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+    </div>
+    <div class="modal fade" id="ProductionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <form asp-controller="Order" asp-action="AddRealizedProductionCount"
+                      data-ajax-success="onSuccess"
+                      data-ajax="true" data-ajax-method="POST" autocomplete="off">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Üretim Sayısı</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 ">
+
+                                <label>
+                                    Planlanan Üretim Sayısı
+                                </label>
+                            </div>
+                            <div class="col-md-6 col-sm-6 ">
+                                <label id="ProductionCount"> </label>
+                                <input type="hidden" name="Id" id="PcId" value="" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:3%">
+                            <div class="col-md-6 col-sm-6 ">
+
+                                <label>Gerçekleşen Üretim Sayısı</label>
+
+                            </div>
+                            <div class="col-md-6 col-sm-6 ">
+                                <input type="text" name="RealizedProduction" class="inpt-charter">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="margin-top:3%">
+                        <button type="submit" class="btn btn-primary" style="margin-right:12px">KAYDET</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var mdl = $('#Modal');
+    function Veri(productId, OrderProductId) {
+        $.get('/Order/GetStaffProcces', { productId: productId, OrderProductId: OrderProductId }).done(function (data) {
+            mdl.empty();
+            mdl.append(data);
+            $('#Modal').modal('show');
+        })
+    }
+    function ProductionModal(count, ıd) {
+        $('#ProductionCount').text(count);
+        $('#PcId').val(ıd);
+        $('#ProductionModal').modal('show');
+    }
+    function LoadEditPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    var onSuccess = function () {
+        $('#ProductionModal').modal('hide');
+        Swal.fire({
+            icon: 'success',
+            title: 'Kayıt İşlemi Başarılı',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        LoadEditPage();
+    };
+</script>

@@ -1,0 +1,93 @@
+﻿@model (StaffDTO staf, List<CommonDTO> commons)
+<div class="row" style="margin-top:10px">
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Ad</label>
+        <div class="col-xs-8">
+            <input type="text" required="required" name="Name" value="@Model.staf.Name" class="inpt-charter">
+        </div>
+    </div>
+    <input type="hidden" name="Id" value="@Model.staf.Id" />
+    <input type="hidden" name="StaffNo" value="@Model.staf.StaffNo" />
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Soyad</label>
+        <div class="col-xs-8">
+            <input type="text" required="required" name="Surname" value="@Model.staf.Surname" class="inpt-charter">
+
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Email</label>
+        <div class="col-xs-8">
+            <input type="text" required="required" name="Email" value="@Model.staf.Email" class="inpt-charter">
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Cep Telefonu</label>
+        <div class="col-xs-8">
+            <input type="tel" required="required" name="Telephone" value="@Model.staf.Telephone" class="inpt-charter">
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Ünvan/Departman</label>
+        <div class="col-xs-8">
+            <input type="text" required="required" name="Department" value="@Model.staf.Department" class="inpt-charter">
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Adres</label>
+        <div class="col-xs-8">
+            <textarea name="Address" required="required" rows="8" cols="40" class="inpt-charter">@Model.staf.Address</textarea>
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">Roller</label>
+        <div class="col-xs-8">
+
+            <select data-placeholder="Seçiniz" name="roles[]" multiple class="chosen-select" tabindex="2">
+                @foreach (var item in Model.commons)
+                {
+                    foreach (var roles in item.RoleNames)
+                    {
+                        if (Model.staf.StaffRolesDTO.Where(x => x.RoleId.ToString() == roles.Value).Any())
+                        {
+                            <option value="@roles.Value" selected>@roles.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@roles.Value">@roles.Text</option>
+                        }
+
+                    }
+
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group cf">
+        <label class="col-xs-4 control-label">İşlem Yetkileri</label>
+        <div class="col-xs-8">
+            <select data-placeholder="Seçiniz" name="Process[]" multiple class="chosen-select" tabindex="2">
+                @foreach (var item in Model.commons)
+                {
+                    foreach (var procces in item.proccessNames)
+                    {
+                        if (Model.staf.StaffProcessPermisionsDTOs.Where(x => x.ProcessId.ToString() == procces.Value).Any())
+                        {
+                            <option value="@procces.Value" selected>@procces.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@procces.Value">@procces.Text</option>
+                        }
+
+                    }
+                }
+
+            </select>
+        </div>
+
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+</script>

@@ -1,0 +1,49 @@
+﻿@model (CategoryDTO category, List<CategoryDTO> listCategory)
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Ürün Üst Kategorisi :</label>
+        <input type="hidden" name="Id" value="@Model.category.Id" />
+        <input type="hidden" name="CategoriesId" value="@Model.category.CategoryLanguageDTOs.FirstOrDefault().CategoriesId" />
+        <input type="hidden" name="ProductLanguageCategoriesId" value="@Model.category.CategoryLanguageDTOs.FirstOrDefault().Id" />
+
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <select data-placeholder="Seçiniz ..." required="required" name="TopCategoryId" class="chosen-select">
+            <option value=""></option>
+            @foreach (var item in Model.listCategory)
+            {
+                if (Model.category.TopCategoryId == item.Id)
+                {
+                    <option value="@item.Id" selected>@item.CategoryLanguageDTOs.FirstOrDefault().Name</option>
+                }
+                else
+                {
+                    <option value="@item.Id">@item.CategoryLanguageDTOs.FirstOrDefault().Name</option>
+                }
+                foreach (var subCategory in item.SubCategoryDto)
+                {
+                    if (Model.category.TopCategoryId == subCategory.Id)
+                    {
+                        <option value="@subCategory.Id" selected>=> @subCategory.CategoryLanguageDTOs.Select(x => x.Name).FirstOrDefault()</option>
+                    }
+                    else
+                    {
+                        <option value="@subCategory.Id">=> @subCategory.CategoryLanguageDTOs.Select(x => x.Name).FirstOrDefault()</option>
+                    }
+                }
+            }
+
+        </select>
+    </div>
+</div>
+<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Ürün Kategori Adı :</label>
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <input type="text" required="required" name="Name" value="@Model.category.CategoryLanguageDTOs.FirstOrDefault().Name" class="inpt-charter" placeholder="">
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+</script>

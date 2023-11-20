@@ -1,0 +1,6 @@
+C:\Users\Demircode-01\Source\Repos\ERP Project Api\Web.Api\obj\Release\net5.0\Web.Api.csproj.AssemblyReference.cache
+C:\Users\Demircode-01\Source\Repos\ERP Project Api\Web.Api\obj\Release\net5.0\Web.Api.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Demircode-01\Source\Repos\ERP Project Api\Web.Api\obj\Release\net5.0\Web.Api.AssemblyInfoInputs.cache
+C:\Users\Demircode-01\Source\Repos\ERP Project Api\Web.Api\obj\Release\net5.0\Web.Api.AssemblyInfo.cs
+C:\Users\Demircode-01\Source\Repos\ERP Project Api\Web.Api\obj\Release\net5.0\Web.Api.csproj.CoreCompileInputs.cache
+C:\Users\Demircode-01\Source\Repos\ERP Project Api\Web.Api\obj\Release\net5.0\Web.Api.MvcApplicationPartsAssemblyInfo.cache

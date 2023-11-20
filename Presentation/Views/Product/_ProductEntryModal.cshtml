@@ -1,0 +1,72 @@
+﻿@model ProductResponseModel
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Gerçekleşen Üretim Adedi :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <input type="text" name="StockProductQuantity" class="inpt-charter">
+        <input type="hidden" name="ProductId" value="@Model.orderProduct.ProductId" />
+    </div>
+</div>
+
+@*<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Fatura No :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <input type="text" name="" class="inpt-charter">
+    </div>
+</div>*@
+
+@*<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Fatura Tarihi :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <div class="input-group date">
+            <input type="text" class="inpt-charter" value="">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+        </div>
+    </div>
+</div>*@
+
+@*<div class="row" style="margin-top: 3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Ürünün Sertifikası :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <input type="file"
+               class="inpt-charter btn-info file">
+    </div>
+</div>*@
+<div class="row" style="margin-top:3%;">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Depo Adı:</label>
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <select data-placeholder="Seçiniz" name="StoreId" class="chosen-select" tabindex="2">
+            <option value=""></option>
+            @foreach (var item in Model.StoreDTO)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+
+    </div>
+</div>
+<div class="row" style="margin-top: 3%;margin-bottom: 3%">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Ürünün Adresi :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <input type="text" name="ProductAddress" placeholder="Bina, Kat, Dolap, Raf Bilgilerini Giriniz..." class="inpt-charter">
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+</script>

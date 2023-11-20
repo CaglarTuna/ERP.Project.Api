@@ -1,0 +1,44 @@
+﻿@model OrderDTO
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Sipariş No:</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <label class="control-label">@Model.OrderNo</label>
+    </div>
+</div>
+
+<div class="row" style="margin-top:3%">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Firma :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <label class="control-label">@if (Model.Companies != null)
+        {<span>@Model.Companies.Name</span>} </label>
+    </div>
+</div>
+
+<div class="row" style="margin-top:3%">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Teslim Tarihi :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <label class="control-label">@Model.Deadline</label>
+    </div>
+</div>
+
+<div class="row" style="margin-top:3%; margin-bottom:3%">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <label class="control-label">Teslim Adresi :</label>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <label class="control-label">
+            @if (Model.Companies != null)
+            {<span>@Model.Companies.CompanyAddressDTOs.Where(x => x.Id == Model.AddressId).Select(x => x.Address).FirstOrDefault()</span>}
+        </label>
+    </div>
+</div>

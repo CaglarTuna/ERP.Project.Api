@@ -1,0 +1,41 @@
+﻿@model List<OrderDTO>
+@foreach (var item in Model.OrderByDescending(x => x.Id))
+{
+    <tr>
+        <td><button type="button" class="btn btn-info">Üretim Emri Ver</button></td>
+        <td><a asp-controller="Order" asp-action="OrderDetailInfo" asp-route-id="" class="btn btn-info">Detay Gör</a></td>
+        <td>
+            @if (item.OrderType == 1)
+            {
+                <span>Üretim Siparişi</span>
+            }
+            else
+            {
+                <span>Satış Siparişi</span>
+            }
+        </td>
+        <td>@item.OrderDate</td>
+        <td>
+            @if (item.Deadline != null)
+            {
+                <span>@item.Deadline</span>
+            }
+            else
+            {
+                <span>-</span>
+            }
+        </td>
+        <td>@item.OrderNo</td>
+        <td>Sipariş Maliyeti Eklenecek</td>
+        <td>@item.Statuss.Name</td>
+        @if (item.Offers.Count > 0)
+        {
+            <td>@item.Offers.Last().TotalCost @item.Offers.Last().Currencies.Name</td>
+        }
+        else
+        {
+            <td>-</td>
+        }
+        <td>Order Type Düzenlemecek</td>
+    </tr>
+}

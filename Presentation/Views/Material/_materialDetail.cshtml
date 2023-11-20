@@ -1,0 +1,117 @@
+﻿@model MaterialResponseModel
+<div class="row">
+    <div class="col-lg-12">
+
+        <div class="row">
+            <div class="col-xs-12">
+
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Malzeme Kodu</label>
+                    <div class="col-xs-8" id="MaterialCode">
+                        @Model.MaterialDTO.Code
+                    </div>
+                </div>
+
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Malzeme Adı</label>
+                    <div class="col-xs-8" id="MaterialName">
+                        @Model.MaterialDTO.Name
+                    </div>
+                </div>
+
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Malzeme Şekli</label>
+                    <div class="col-xs-8" id="MaterialShape">
+                        @Model.MaterialDTO.MaterialShape.Name
+                    </div>
+                </div>
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Ölçü 1 Çap</label>
+                    <div class="col-xs-8" id="">
+                        @Model.MaterialDTO.Diameter
+                    </div>
+                </div>
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Ölçü 2 Boy</label>
+                    <div class="col-xs-8" id="">
+                        @Model.MaterialDTO.Length
+                    </div>
+                </div>
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Ölçü 3 mm</label>
+                    <div class="col-xs-8" id="">
+                        @Model.MaterialDTO.Meter
+                    </div>
+                </div>
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Tüketim Birimi</label>
+                    <div class="col-xs-8" id="materialUnits">
+                        @foreach (var item in Model.Commons)
+                        {
+                            foreach (var unit in item.unitsOfMeasureDTOs)
+                            {
+                                foreach (var x in Model.MaterialDTO.materialUnitsOfMeasuresDTOs.Where(x=>x.UnitsOfMeasureId==unit.Id))
+                                {
+                                    <span>@unit.Name</span>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Birim Ölçü</label>
+                    <div class="col-xs-8">
+                        @foreach (var item in Model.Commons)
+                        {
+                            foreach (var unit in item.unitsOfMeasureDTOs)
+                            {
+                                foreach (var x in Model.MaterialDTO.materialUnitsOfMeasuresDTOs.Where(x => x.PurchasingUnitId == unit.Id))
+                                {
+                                    <span>@unit.Name</span>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Hammadde</label>
+                    <div class="col-xs-8" id="materialRaw">
+                        @foreach (var item in Model.rawMaterials)
+                        {
+                            if (Model.MaterialDTO.materialRawMaterial.Any(x => x.RawMaterialId == item.Id))
+                            {
+                                <span>@item.Name  </span>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Maliyet</label>
+                    <div class="col-xs-8" id="MaterialPrice">
+                        @Model.MaterialDTO.CostPrice
+                    </div>
+                </div>
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Tedarikçi Firmalar</label>
+                    <div class="col-xs-8" id="materialCompony">
+                        @foreach (var item in Model.companyDTOs)
+                        {
+                            if (Model.MaterialDTO.materialSuppliers.Any(x => x.CompanyId == item.Id))
+                            {
+                                <span>@item.Name  </span>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="form-group cf">
+                    <label class="col-xs-4 control-label" style="color:black">Minimum Stok Miktarı</label>
+                    <div class="col-xs-8" id="materialStock">
+                        @Model.MaterialDTO.MinStockQuantity
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,174 @@
+﻿@model MaterialStockEntyrModel
+@{
+    ViewData["Title"] = "AddMateialStockEntys";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Malzeme Stok Girişi</legend>
+                <form asp-controller="Material" asp-action="AddMateialStockEntys" method="post" enctype="multipart/form-data" autocomplete="off">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Depo :</label>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <select data-placeholder="Seçiniz" name="StoreId" class="chosen-select">
+                                <option value=""></option>
+                                @foreach (var item in Model.Stores)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Malzeme :</label>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <select data-placeholder="Seçiniz" name="MaterialId" class="chosen-select">
+                                <option value=""></option>
+                                @foreach (var item in Model.Materials)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Tedarikçi Firma :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+
+                            <select data-placeholder="Seçiniz" name="CompanyId" class="chosen-select">
+                                <option value=""></option>
+                                @foreach (var item in Model.Companies)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-12 col-md-12 col-md-12 col-xs-12">
+                            <i class="fa fa-plus-square" onclick="SatırEkle()"
+                               style="font-size:35px; float:right; cursor: pointer;"></i>
+                        </div>
+                    </div>
+
+                    <div class="row" id="OrderList" style="margin-top: 3%;">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="Orders">
+                            <select name="OrderId[]" required="required" data-placeholder="Sipariş Numarasını Seçiniz"
+                                    class="chosen-select">
+                                <option value=""></option>
+                                @foreach (var item in Model.Orders)
+                                {
+                                    <option value="@item.Id">@item.OrderNo</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <input type="text" required="required" name="Quantitiy[]" id="OrderQuantity" placeholder="Adet" class="inpt-charter">
+                        </div>
+                    </div>
+                    <div id="NewOrderList"></div>
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Adet / Toplam Miktar :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <input type="text" name="Quantity" placeholder="" class="inpt-charter">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Malzeme Sertifikası Adı :</label>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <input type="text" required="required" name="Certificate" class="inpt-charter">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Malzeme Sertifikası :</label>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <input type="file" required="required" name="File" class="inpt-charter">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Fatura No :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <input type="text" name="InvoiceNo" placeholder="" class="inpt-charter">
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Fatura Tarihi :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <div class="input-group date">
+                                <input type="text" class="inpt-charter DatetimeChart" name="InvoiceDate" value="">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 3%;">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Malzemenin Adresi :</label>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <input name="MaterialAdress" placeholder="Bina, Kat, Daire, Dolap, Raf Bilgilerini Giriniz" class="inpt-charter">
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:3%;margin-bottom:3%">
+                        <div class="col-lg-12 col-md-12 col-md-12 col-xs-12">
+                            <button style=" float: right" type="submit" class="btn btn-info">
+                                KAYDET
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<script>
+    let sayi = 1;
+    function SatırEkle() {
+        sayi++;
+        $('#OrderList').clone().attr('id', 'choosenSelect_' + sayi + '').appendTo($('#NewOrderList'));
+        $('#NewOrderList > #choosenSelect_' + sayi + '> #Orders > .chosen-select').attr('id', 'Select_' + sayi + '');
+
+        $('#Select_' + sayi + '').chosen("destroy");
+        $('#Select_' + sayi + '').chosen();
+
+        $('#NewOrderList > #choosenSelect_' + sayi + '> #Orders > .chosen-container-single').css("display", "none");
+        $('#Select_' + sayi + '_chosen').css("display", "inline-block");
+
+        $('#NewOrderList > #choosenSelect_' + sayi + '> #Orders > #Select_' + sayi + ' > option[value=""]').attr('selected', 'selected');
+        $('#NewOrderList > #choosenSelect_' + sayi + '> div > #OrderQuantity').val("");
+    }
+    $(function () {
+        $('.DatetimeChart').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            format: "dd/mm/yyyy",
+            language: "tr"
+        });
+    });
+</script>

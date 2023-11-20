@@ -1,0 +1,164 @@
+﻿@model List<MaterialCertificatesDTO>
+@{
+    ViewData["Title"] = "MaterialCertificate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+
+    <!-- ////////////////////////////////////// ORTA KISIM BAŞLANGIÇ//////////////////// -->
+    <!--FİLTER AREA-->
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Filtreleme Alanı</legend>
+                <!--SEARCH AREA-->
+                <div class="row">
+                    <div class="col-lg-11 col-md-11 col-sm-10 col-xs-10">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">  <input type="text" name="" class="inpt-charter" placeholder="Giriniz..."></div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">  <button style=" float: right;margin-top:10px" type="submit" class="btn-charter-p m-b">FİLTRELE</button></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                        <i data-toggle="modal" data-target="#inputModal" class="fa fa-plus-square" style="font-size:35px; float:right"></i>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <!--LİSTE ALANI-->
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Sertifika Listesi</legend>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-responsive mb10">
+                            <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                <thead>
+                                    <tr>
+
+
+                                        <th>Sil</th>
+                                        <th>Görüntüle</th>
+                                        <th>Dosya Adı</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        var fileName = item.Certificate.Split(".")[0];
+                                        <tr>
+                                            <td><a onclick="DeleteCertificate(@item.Id)" class="btn btn-info">sil</a> </td>
+                                            <td><a href="~/MaterialCertificate/@item.Certificate" target="_blank" class="btn btn-info">Görüntüle</a> </td>
+                                            <td>@fileName</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:100%">
+            <form asp-controller="Material" asp-action="AddMaterialCertificate"
+                  data-ajax-success="onSuccess" data-ajax-begin="OnBegin"
+                  data-ajax="true" data-ajax-method="POST" enctype="multipart/form-data" autocomplete="off">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Malzeme Sertikası Ekle</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row" style="margin-top:10px">
+                        <input type="hidden" name="MaterialId" value="@ViewBag.MaterialId" />
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Sertifika Adı</label>
+                            <div class="col-xs-8">
+                                <input type="text" required="required" name="Certificate" class="inpt-charter">
+                            </div>
+                        </div>
+                        <div class="form-group cf">
+                            <label class="col-xs-4 control-label">Sertifika</label>
+                            <div class="col-xs-8">
+                                <input type="file" required="required" name="File" class="inpt-charter">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" style="margin-right:15px" class="btn btn-info btnClick">KAYDET</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function LoadPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    function DeleteCertificate(id) {
+        $.ajax({
+            url: "/Material/deleteCertificate",
+            data: { id: id },
+            type: 'GET',
+            success: function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Silme İşlemi Başarılı',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                LoadPage();
+            }
+        })
+    };
+
+    var onSuccess = function (data) {
+        $('#inputModal').modal('hide');
+        if (data == 200) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Kayıt İşlemi Başarılı',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+        else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Kayıt İşlemi Sırasında Hata Meydana Geldi',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+        LoadPage();
+    };
+    function OnBegin() {
+        $('#inputModal').modal('hide');
+        $('.btnClick').prop("disabled", true);
+        let timerInterval
+        Swal.fire({
+            title: 'İçerik Güncelleniyor',
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+            },
+            willClose: () => {
+                clearInterval(timerInterval)
+            }
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+            }
+        })
+    }
+</script>

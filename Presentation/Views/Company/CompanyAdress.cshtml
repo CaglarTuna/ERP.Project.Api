@@ -1,0 +1,230 @@
+﻿@model (CompanyDTO comp, List<CommonDTO> common)
+@{
+    ViewData["Title"] = "CompanyAdress";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Filtreleme Alanı</legend>
+                <div class="row">
+                    <div class="col-lg-11 col-md-11 col-sm-10 col-xs-10">
+                        <form asp-controller="Compony" asp-action="CompanyAdress" asp-route-id="@Model.comp.Id" method="post">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">  <input type="text" name="filtre" class="inpt-charter" placeholder="Giriniz..."></div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">  <button style=" float: right;margin-top:10px" type="submit" class="btn-charter-p m-b">FİLTRELE</button></div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                        <i data-toggle="modal" data-target="#AddAddress" class="fa fa-plus-square" style="font-size:35px; float:right"></i>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Adres Listesi (@Model.comp.Name)</legend>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-responsive mb10">
+                            <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                <thead>
+                                    <tr>
+                                        <th>Düzenle</th>
+                                        <th>Adres Başlığı</th>
+                                        <th>Ülke</th>
+                                        <th>İl</th>
+                                        <th>Posta Kodu</th>
+                                        <th>Adres</th>
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.comp.CompanyAddressDTOs != null)
+                                    {
+                                        foreach (var item in Model.comp.CompanyAddressDTOs.OrderByDescending(x=>x.Id))
+                                        {
+                                            <tr>
+                                                <td><a onclick="editAddres(@item.CompanyId,@item.Id)" class="btn btn-info">Düzenle</a> </td>
+                                                <td>@item.AddressTitle</td>
+                                                <td>
+                                                    @foreach (var common in Model.common)
+                                                    {
+                                                        foreach (var county in common.countries.Where(x => x.Id == item.CountryId))
+                                                        {
+                                                            <span>@county.CountryLanguage.FirstOrDefault().Name</span>
+                                                        }
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @foreach (var common in Model.common)
+                                                    {
+                                                        foreach (var country in common.countries.Where(x => x.Id == item.CountryId))
+                                                        {
+                                                            foreach (var city in country.Cities.Where(x => x.Id == item.CityId))
+                                                            {
+                                                                <span>@city.CityLanguage.FirstOrDefault().Name</span>
+                                                            }
+                                                        }
+                                                    }
+                                                </td>
+                                                <td>@item.PostCode</td>
+                                                <td>@item.Address</td>
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+
+    <!-- Adres ekleme POP-UP-->
+    <div class="modal fade" id="AddAddress" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width:100%">
+                <form asp-controller="Company" asp-action="AddCompanyAdress"
+                      data-ajax-success="onSuccess"  data-ajax-begin="OnBegin"
+                      data-ajax="true" data-ajax-method="POST" autocomplete="off">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Adres Güncelle</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="margin-top:10px">
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Adres Başlığı </label>
+                                <div class="col-xs-8">
+                                    <input type="text" required="required" name="AddressTitle" class="inpt-charter">
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Ülke</label>
+                                <div class="col-xs-8">
+                                    <select data-placeholder="Seçiniz" required="required" id="CountrySelect" name="CountryId" class="chosen-select" tabindex="2">
+                                        <option value=""></option>
+                                        @foreach (var item in Model.common.Take(1))
+                                        {
+                                            foreach (var country in item.countries)
+                                            {
+                                                <option value="@country.Id">@country.CountryLanguage.FirstOrDefault().Name</option>
+                                            }
+                                        }
+
+                                    </select>
+                                    <input type="hidden" name="CompanyId" value="@Model.comp.Id" />
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">İl</label>
+                                <div class="col-xs-8">
+                                    <select data-placeholder="Seçiniz" required="required" name="CityId" id="cityList" class="chosen-select" tabindex="2">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Posta Kodu</label>
+                                <div class="col-xs-8">
+                                    <input type="number"  name="PostCode" class="inpt-charter">
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Adres</label>
+                                <div class="col-xs-8">
+                                    <textarea name="Address" required="required" rows="8" cols="40" class="inpt-charter"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" style="margin-right:15px" class="btn btn-info btnClick">KAYDET</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="edtModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-controller="Company" asp-action="editComponyAdress"
+              data-ajax-success="onEditSuccess"  data-ajax-begin="OnBegin"
+              data-ajax="true" data-ajax-method="POST">
+            <div class="modal-content" style="width:100%">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Adres Güncelle</h4>
+                </div>
+                <div class="modal-body editAdresModal">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" style="margin-right:15px" class="btn btn-info btnClick">KAYDET</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function LoadPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    var onSuccess = function () {
+        $('#AddAddress').modal('hide');
+        Swal.fire({
+            icon: 'success',
+            title: 'Kayıt İşlemi Başarılı',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        LoadPage();
+    };
+    var edit = $('.editAdresModal');
+    function editAddres(id, addresId) {
+        $.get('/Company/geteditComponyAdress', { id: id, addresId: addresId }).done(function (data) {
+            edit.empty();
+            edit.html(data);
+            $('#edtModal').modal('show');
+        })
+    }
+    $('#CountrySelect').change(function () {
+        var id = $('#CountrySelect').val();
+        $.get("/Company/getCityList", { id: id }).done(function (data) {
+            $('#cityList').empty();
+            $('#cityList').append('<option value=""></option>')
+            for (var i = 0; i < data.$values.length; i++) {
+                $('#cityList').append('<option value="' + data.$values[i].cityId + '">' + data.$values[i].cityName + '</option>')
+            }
+            $('#cityList').trigger("chosen:updated");
+        })
+    })
+    function OnBegin() {
+        $('#AddAddress').modal('hide');
+        $('.btnClick').prop("disabled", true);
+        let timerInterval
+        Swal.fire({
+            title: 'İçerik Güncelleniyor',
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+            },
+            willClose: () => {
+                clearInterval(timerInterval)
+            }
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                
+            }
+        })
+    }
+</script>

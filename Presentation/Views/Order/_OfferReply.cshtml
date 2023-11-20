@@ -1,0 +1,62 @@
+﻿@model OfferDTO
+<div class="row">
+    <div class="col-lg-12">
+
+        <div class="row">
+            <div class="col-xs-12">
+
+                <div class="form-group cf">
+                    <div class="form-group cf">
+                        <label class="col-xs-4 control-label" style="color:black">Teklif Tarihi :</label>
+                        <div class="col-xs-8">
+                            @Model.CreateDate.ToString("dd.MM.yyyy");
+                        </div>
+                    </div>
+                    <div class="form-group cf">
+                        <label class="col-xs-4 control-label" style="color:black">Toplam Satır Teklif Tutarı :</label>
+                        <div class="col-xs-8">
+                            @Model.UnitCost @Model.Currencies.Name
+                        </div>
+                    </div>
+                    <input type="hidden" name="OrderId" value="@Model.OrderId" />
+                    <div class="form-group cf">
+                        <label class="col-xs-4 control-label" style="color:black">KDV(%18) :</label>
+                        <div class="col-xs-8">
+                            @Model.Kdv @Model.Currencies.Name
+                        </div>
+                    </div>
+                    <div class="form-group cf">
+                        <label class="col-xs-4 control-label" style="color:black">Toplam Teklif Tutarı :</label>
+                        <div class="col-xs-8">
+                            @Model.TotalCost @Model.Currencies.Name
+                        </div>
+                    </div>
+                    <div class="form-group cf">
+                        <label class="col-xs-4 control-label" style="color:black">Müşteri Cevabı :</label>
+                        <div class="col-xs-8">
+                            <textarea name="CustomerReply" rows="6" placeholder="Teklifinizi değerlendirdik ve kabul ediyoruz."
+                                      cols="40" class="inpt-charter"></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group cf">
+                        <label class="col-xs-4 control-label" style="color:black">Teklif Statüsü</label>
+                        <div class="col-xs-8">
+                            <select data-placeholder="Seçiniz ..." name="OfferStatuId" class="chosen-select">
+                                <option value=""></option>
+                                <option value="1">Kabul</option>
+                                <option value="2">Red</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+</script>

@@ -1,0 +1,263 @@
+﻿@model ConsuptionMaterialResponseModel
+@{
+    ViewData["Title"] = "ConsuptionMaterialManagement";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Filtreleme Alanı</legend>
+                <div class="row">
+                    <form asp-controller="ConsumptionMaterial" asp-action="ConsuptionMaterialManagement" method="post" autocomplete="off">
+                        <div class="col-lg-11 col-md-11 col-sm-10 col-xs-10">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">  <input type="text" name="Filtre" class="inpt-charter" placeholder="Giriniz..."></div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">  <button style=" float: right;margin-top:10px" type="submit" class="btn-charter-p m-b">FİLTRELE</button></div>
+                            </div>
+
+                        </div>
+                    </form>
+                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                        <i data-toggle="modal" data-target="#inputModal" class="fa fa-plus-square" style="font-size:35px; float:right"></i>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Sarf Malzeme Listesi</legend>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-responsive mb10">
+                            <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                <thead>
+                                    <tr>
+
+                                        <th>Detay</th>
+                                        <th>Düzenle</th>
+                                        <th>Sarf Malzeme No</th>
+                                        <th>Sarf Malzeme Adı</th>
+                                        <th>Birim</th>
+                                        <th>Maliyet</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.consumptionMaterialDTOs)
+                                    {
+                                        <tr>
+                                            <td><a onclick="getDetail(@item.Id)" class="btn btn-info">Detay Gör</a> </td>
+                                            <td><a onclick="getEdit(@item.Id)" class="btn btn-info">Düzenle</a> </td>
+                                            <td>@item.Code</td>
+                                            <td>@item.Name</td>
+                                            <td>@item.UnitsOfMeasure.Name</td>
+                                            <td>@item.CostPrice @item.Currencies.Name</td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="modal fade" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width:100%">
+                <form asp-controller="ConsumptionMaterial" asp-action="AddConsuptionMaterial"
+                      data-ajax-success="onSuccess" data-ajax-begin="OnBegin"
+                      data-ajax="true" data-ajax-method="POST" autocomplete="off">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Sarf Malzeme Ekle</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row" style="margin-top:10px">
+
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Sarf Malzeme Kodu </label>
+                                <div class="col-xs-8">
+                                    <input type="text" name="Code" class="inpt-charter">
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Sarf Malzeme Adı </label>
+                                <div class="col-xs-8">
+                                    <input type="text" name="Name" class="inpt-charter">
+
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Birimi</label>
+                                <div class="col-xs-8">
+                                    <select data-placeholder="Seçiniz" name="UnitsOfMeasureId" class="chosen-select" tabindex="2">
+                                        <option value=""></option>
+                                        @foreach (var item in Model.commonDTOs)
+                                        {
+                                            foreach (var unitOfMeasure in item.unitsOfMeasureDTOs)
+                                            {
+
+                                                <option value="@unitOfMeasure.Id">@unitOfMeasure.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Maliyet Fiyatı</label>
+                                <div class="col-xs-8">
+                                    <input type="text" name="CostPrice" class="inpt-charter">
+                                </div>
+                            </div>
+
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Döviz</label>
+                                <div class="col-xs-8">
+                                    <select data-placeholder="Seçiniz" name="CurrencyId" class="chosen-select" tabindex="2">
+                                        <option value=""></option>
+                                        @foreach (var item in Model.commonDTOs)
+                                        {
+                                            foreach (var currency in item.currenciesDTOs)
+                                            {
+
+                                                <option value="@currency.Id">@currency.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Tedarikçi Firma</label>
+                                <div class="col-xs-8">
+                                    <select data-placeholder="Seçiniz" name="CompanyId[]" multiple class="chosen-select" tabindex="2">
+                                        <option value=""></option>
+                                        @foreach (var item in Model.companies)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group cf">
+                                <label class="col-xs-4 control-label">Minimum Stok Miktarı</label>
+                                <div class="col-xs-8">
+                                    <input type="text" required name="MinStockQuantity" class="inpt-charter">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" style="margin-right:15px" class="btn btn-info btnClick">KAYDET</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="inputdetayModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:100%">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Sarf Malzeme Detay</h4>
+            </div>
+
+            <div class="modal-body DetailModal">
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:100%">
+            <form asp-controller="ConsumptionMaterial" asp-action="editConsuptionMaterial"
+                  data-ajax-success="onSuccess" data-ajax-begin="OnBegin"
+                  data-ajax="true" data-ajax-method="POST" autocomplete="off">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Sarf Malzeme Güncelle</h4>
+                </div>
+
+                <div class="modal-body editMaterialModal">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" style="margin-right:15px" class="btn btn-info btnClick">KAYDET</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function LoadEditPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    var onSuccess = function (data) {
+        $('#inputModal').modal('hide');
+        if (data == "2") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Kayıt İşlemi Sırasında hata meydana geldi',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+        else {
+            Swal.fire({
+                icon: 'success',
+                title: 'Kayıt İşlemi Başarılı',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+        LoadEditPage();
+    };
+    var modal = $('.DetailModal');
+    function getDetail(id) {
+        $.get('/ConsumptionMaterial/consuptionMateriaManagementlDetail', { id: id }).done(function (data) {
+            modal.empty();
+            modal.html(data);
+            $('#inputdetayModal').modal('show');
+        });
+    }
+    var edit = $('.editMaterialModal');
+    function getEdit(id) {
+        $.get('/ConsumptionMaterial/editConsuption', { id: id }).done(function (data) {
+            edit.empty();
+            edit.html(data);
+            $('#editModal').modal('show');
+        });
+    }
+    function OnBegin() {
+        $('#inputModal').modal('hide');
+        $('.btnClick').prop("disabled", true);
+        let timerInterval
+        Swal.fire({
+            title: 'İçerik Güncelleniyor',
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+            },
+            willClose: () => {
+                clearInterval(timerInterval)
+            }
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+            }
+        })
+    }
+</script>

@@ -1,0 +1,100 @@
+﻿@model OrderDTO
+@{
+    ViewData["Title"] = "ProductStockEntry";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Siparişteki Ürünler Listesi</legend>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-responsive mb10">
+                            <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                <thead>
+                                    <tr>
+                                        <th>Ürün Girişini Yap</th>
+                                        <th>Planlanan Ürün Sayısı</th>
+                                        <th>Üretim Seri No</th>
+                                        <th>Ürün No</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderProducts)
+                                    {
+                                        <tr>
+                                            <td><a onclick="getProduct(@item.Id)" class="btn btn-info">Ürün Girişi Yap</a></td>
+                                            <td>@item.Quantitiy</td>
+                                            <td>@item.Products.ProductionSerialNumber</td>
+                                            <td>@item.Products.BarcodeNo</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-controller="Product" asp-action="UpdateProductStock"
+                      data-ajax-success="onSuccess"
+                      data-ajax="true" data-ajax-method="POST" autocomplete="off">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Depoya Ürün Ekle</h4>
+                    </div>
+                    <div class="modal-body productModal">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" style="margin-right:12px">KAYDET</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function LoadEditPage() {
+        setTimeout(function () { window.location.reload() }, 2000);
+    }
+    var ProductModal = $('.productModal');
+    function getProduct(id) {
+        $.get('/Product/ProductEntryModal', { id: id }).done(function (data) {
+            ProductModal.empty();
+            ProductModal.html(data);
+            $('#saveModal').modal('show');
+        })
+    }
+    var onSuccess = function (data) {
+        $('#saveModal').modal('hide');
+        if (data == "200") {
+            Swal.fire({
+                icon: 'success',
+                title: 'Kayıt İşlemi Başarılı',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+        else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Kayıt İşlemi Sırasında hata gerçekleşti',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+        LoadEditPage();
+    };
+</script>

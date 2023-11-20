@@ -1,0 +1,156 @@
+﻿@model OrderDTO
+@{
+    ViewData["Title"] = "CompanyOrderDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <fieldset class="fieldset">
+                <legend class="fieldsetb">Sipariş Detayı</legend>
+                <div class="row">
+                    <div class="col-xs-12">
+
+                        <div class="form-group cf">
+                            <label class="col-xs-2 control-label" style="color:black">Sipariş No </label>
+                            <div class="col-xs-10">
+                                @Model.OrderNo
+                            </div>
+                        </div>
+
+                        <div class="form-group cf">
+                            <label class="col-xs-2 control-label" style="color:black">Sipariş Durumu</label>
+                            <div class="col-xs-10">
+                                @if (Model.Offers.GroupBy(x => x.UnitCost).Select(x => x.First()).FirstOrDefault().OfferStatuId == 1)
+                                {
+                                    <span>Kabul</span>
+                                }
+                                else if (Model.Offers.GroupBy(x => x.UnitCost).Select(x => x.First()).FirstOrDefault().OfferStatuId == 2)
+                                {
+                                    <span>Red</span>
+                                }
+                                else
+                                {
+                                    <span>Süreçte</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-group cf">
+                            <label class="col-xs-2 control-label" style="color:black">Toplam Maliyet</label>
+                            <div class="col-xs-10">
+                                @Model.Offers.FirstOrDefault().UnitCost @Model.Offers.FirstOrDefault().Currencies.Name
+                            </div>
+                        </div>
+                        <div class="form-group cf">
+                            <label class="col-xs-2 control-label" style="color:black">Kabul Görülmüş Teklif</label>
+                            <div class="col-xs-10">
+                                @Model.Offers.FirstOrDefault().TotalCost @Model.Offers.FirstOrDefault().Currencies.Name
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ÜRÜN LİSTE ALANI-->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <fieldset class="fieldset">
+                            <legend class="fieldsetb">Ürün Listesi</legend>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="table-responsive mb10">
+                                        <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                            <thead>
+                                                <tr>
+
+                                                    <th>Ürün Stok No</th>
+                                                    <th>Ürün Adı</th>
+                                                    <th>Adet</th>
+                                                    <th>Ürün Maliyeti</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                @foreach (var item in Model.OrderProducts)
+                                                {
+                                                    <tr>
+                                                        <td>@item.Products.ProductionSerialNumber </td>
+                                                        <td>@item.Products.Name</td>
+                                                        <td>@item.Quantitiy</td>
+                                                        @if (item.Orders != null)
+                                                        {
+                                                            <td>@item.Orders.Offers.FirstOrDefault(x => x.ProductId == item.ProductId).LineOfferAmount @item.Orders.Offers.FirstOrDefault(x => x.ProductId == item.ProductId).Currencies.Name</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>-</td>
+}
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <!-- TEKLİFLER LİSTE ALANI-->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <fieldset class="fieldset">
+                            <legend class="fieldsetb">Teklifler</legend>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="table-responsive mb10">
+                                        <table class="table table-striped table-bordered table-hover dataTables dataTable ">
+                                            <thead>
+                                                <tr>
+                                                    <th>Teklif Tarihi</th>
+                                                    <th>Teklif</th>
+                                                    <th>Teklif Durumu</th>
+                                                    <th>Teklif Cevap Tarihi/Durum Değişikliği Tarihi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.Offers.OrderByDescending(x => x.Id).GroupBy(x => x.UnitCost).Select(x => x.First()))
+                                                {
+                                                    <tr>
+                                                        <td>@item.CreateDate</td>
+                                                        <td>@item.TotalCost @item.Currencies.Name </td>
+                                                        <td>
+                                                            @if (item.OfferStatuId == 1)
+                                                            {
+                                                                <span>Kabul</span>
+                                                            }
+                                                            else if (item.OfferStatuId == 2)
+                                                            {
+
+                                                                <span>Red</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>Süreçte</span>
+                                                            }
+                                                        </td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+    </div>
+</div>

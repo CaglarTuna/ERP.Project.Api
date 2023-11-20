@@ -1,0 +1,99 @@
+﻿@model ProductDTO
+@{
+    ViewData["Title"] = "productPrescription";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .imgSize {
+        width: 512px;
+        height: 290px;
+    }
+</style>
+<div class="wrapper wrapper-content animated fadeInRight mt60">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="tabs-container">
+                <ul class="nav nav-tabs tab-border-top-danger">
+                    <li class=""><a asp-controller="Product" asp-action="ProductInfo" asp-route-id="@Model.Id">Ürün Bilgileri</a></li>
+                    <li class="active"><a asp-controller="Product" asp-action="productPrescription" asp-route-id="@Model.Id">Ürün Reçetesi</a></li>
+                    <li class=""><a asp-controller="Product" asp-action="ProductStock" asp-route-id="@Model.Id">Stok</a></li>
+                    <li class=""><a asp-controller="Product" asp-action="SpecialProductList" asp-route-id="@Model.Id">Benzersiz Ürün Sorgulama</a></li>
+                </ul>
+                <div class="tab-content">
+
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="panel-body">
+
+                            <fieldset class="fieldset">
+                                <legend class="fieldsetb">Ürün Reçetesi Detay</legend>
+                                <div class="row">
+                                    <div class="col-xs-12">
+
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">Ürün Kategorisi</label>
+                                            <div class="col-xs-10">
+                                                @Model.Categories.CategoryLanguageDTOs.FirstOrDefault().Name
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">Ürün Adı</label>
+                                            <div class="col-xs-10">
+                                                @Model.Name
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">Malzeme</label>
+                                            @foreach (var item in Model.productMaterialDTOs)
+                                            {
+                                                <div class="col-xs-10">
+                                                    @item.Count adet @item.Materials.Name
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">İşlem</label>
+                                            @foreach (var item in Model.productProcessDTOs)
+                                            {
+                                                <div class="col-xs-10">
+                                                    @item.ProcessOrderNo - @item.ProcessDuration dakika @item.Process.ProcessLanguage.FirstOrDefault(x => x.ProcessId == item.Process.Id).Name
+                                                </div>
+                                            }
+
+                                        </div>
+                                        @if (Model.productDocumentDTOs.Count > 0)
+                                        {
+                                            <div class="form-group cf">
+                                                <label class="col-xs-2 control-label" style="color:black">Teknik Resim</label>
+                                                <div class="col-xs-10">
+                                                    <img class="imgSize" src="~/Images/@Model.productDocumentDTOs.FirstOrDefault(x=>x.Document.Type==".jpg"||x.Document.Type==".png").Document.Name">
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (Model.productDocumentDTOs.Count > 0)
+                                        {
+                                            <div class="form-group cf">
+                                                <label class="col-xs-2 control-label" style="color:black">Teknik Pdf</label>
+                                                <div class="col-xs-10">
+                                                    <a href="~/Documents/@Model.productDocumentDTOs.FirstOrDefault(x=>x.Document.Type==".pdf").Document.Name" target="_blank">Teknik Pdf için Tıklayınız...</a>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        <div class="form-group cf">
+                                            <label class="col-xs-2 control-label" style="color:black">Açıklama</label>
+                                            <div class="col-xs-10">
+                                                @Model.ProductDescription
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
